@@ -13,6 +13,7 @@ Future<void> main() async {
 
     runApp(MaterialApp(
       themeMode: ThemeMode.system,
+      theme: ThemeData(fontFamily: "Cronos-Pro"),
       title: "UMICH MSA",
       navigatorKey: MsaRouter.instance.navigatorKey,
       home: MsaRouter.instance.home,

@@ -25,42 +25,53 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-                icon: Image.asset("assets/images/icon64.png"),
-                onPressed: () {}),
+                icon: Image.asset("assets/images/icon64.png"), onPressed: null),
             iconTheme: IconThemeData(color: Colors.yellow),
             backgroundColor: const Color.fromARGB(255, 30, 48, 96),
-            bottom: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.access_alarm_outlined)), // Widgets class
-                Tab(icon: Icon(Icons.add_task_outlined)),
-              ],
-            ),
+            // bottom: const TabBar(
+            //   tabs: [
+            //     Tab(icon: Icon(Icons.access_alarm_outlined)), // Widgets class
+            //     Tab(icon: Icon(Icons.add_task_outlined)),
+            //   ],
+            // ),
             title: const Text(
-              'University of Michigan - MSA',
-              style: TextStyle(color: Color.fromARGB(255, 252, 210, 12)),
+              'UMICH Muslim Students\' Association',
+              style: TextStyle(
+                  color: Color.fromARGB(255, 252, 210, 12),
+                  fontFamily: "Cronos-Pro"),
             ),
           ),
-          body: const TabBarView(
+          body: Column(
             children: [
-              Icon(Icons.access_alarm_outlined),
-              Icon(Icons.add_task_outlined)
+              Container(
+                child: Text(
+                  "Reflection Rooms",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontFamily: "Cronos-Pro",
+                      fontSize: 24.0),
+                ),
+                alignment: AlignmentGeometry.lerp(
+                    Alignment.center, Alignment.center, 0),
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+              ),
             ],
           ),
+          // const TabBarView(
+          //   children: [
+          //     Icon(Icons.access_alarm_outlined),
+          //     Icon(Icons.add_task_outlined)
+          //   ],
+          // ),
           bottomNavigationBar: BottomNavigationBar(
             unselectedItemColor: Colors.white,
             selectedItemColor: Color.fromARGB(230, 252, 210, 12),
             backgroundColor: Color.fromARGB(255, 30, 48, 96),
             type: BottomNavigationBarType.fixed,
-            currentIndex: 1, // this will be set when a new tab is tapped
+            currentIndex: 0, // this will be set when a new tab is tapped
             items: [
               const BottomNavigationBarItem(
-                icon: Icon(Icons.access_alarm_outlined),
-                label: 'Salah Time',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.announcement_outlined),
-                label: 'Updates',
-              ),
+                  icon: Icon(Icons.space_dashboard_outlined), label: 'Salah'),
               const BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_today_outlined), label: 'Events'),
               const BottomNavigationBarItem(

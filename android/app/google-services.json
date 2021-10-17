@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "735444689100",
+    "project_id": "umich-msa",
+    "storage_bucket": "umich-msa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735444689100:android:4593f0623f392fd06ba269",
+        "android_client_info": {
+          "package_name": "com.saadahm.umichmsa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735444689100-3aek0a4oto0ajv0j8r52rcfq5117e0ds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saadahm.umichmsa",
+            "certificate_hash": "3244e557ef66da19728c194a748a4eb1cb66d4d6"
+          }
+        },
+        {
+          "client_id": "735444689100-bol7253dnq6mrg74nmkumu7mk45o5dt5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC75LewoFvUzuArN8UltjS6m6kWSluUJcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735444689100-bol7253dnq6mrg74nmkumu7mk45o5dt5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

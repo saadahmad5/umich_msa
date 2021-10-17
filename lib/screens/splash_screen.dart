@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/home_screen.dart';
+import 'package:umich_msa/screens/user_signup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen();
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(
       const Duration(milliseconds: 2000),
       () {
-        MsaRouter.instance.pushReplacement(HomeScreen.route());
+        MsaRouter.instance.pushReplacement(UserAuthScreen.route());
       },
     );
   }
