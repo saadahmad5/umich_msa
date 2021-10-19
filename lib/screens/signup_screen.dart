@@ -4,22 +4,22 @@ import 'package:flutter/services.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 
-class UserAuthScreen extends StatefulWidget {
-  const UserAuthScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   static String routeName = 'userAuthScreen';
-  static Route<UserAuthScreen> route() {
-    return MaterialPageRoute<UserAuthScreen>(
+  static Route<SignUpScreen> route() {
+    return MaterialPageRoute<SignUpScreen>(
       settings: RouteSettings(name: routeName),
-      builder: (BuildContext context) => const UserAuthScreen(),
+      builder: (BuildContext context) => const SignUpScreen(),
     );
   }
 
   @override
-  _UserAuthScreenState createState() => _UserAuthScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _UserAuthScreenState extends State<UserAuthScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   int _currentStep = 0;
 
   @override
