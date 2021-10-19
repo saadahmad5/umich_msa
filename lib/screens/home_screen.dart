@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "UMICH MSA",
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -38,7 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
               'UMICH Muslim Students\' Association',
               style: TextStyle(
                   color: Color.fromARGB(255, 252, 210, 12),
-                  fontFamily: "Cronos-Pro"),
+                  fontFamily: "Cronos-Pro",
+                  fontSize: 16.0),
             ),
           ),
           body: Column(
