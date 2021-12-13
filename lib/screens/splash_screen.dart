@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/home_screen.dart';
+import 'package:umich_msa/screens/signin_screen.dart';
 import 'package:umich_msa/screens/signup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -107,14 +108,7 @@ class _SplashScreenState extends State<SplashScreen> {
         style: TextStyle(color: Colors.blue),
       ),
       onPressed: () {
-        Navigator.of(context).pop();
-        setState(() => isAuth = true);
-        Future.delayed(
-          const Duration(milliseconds: 2000),
-          () {
-            MsaRouter.instance.pushReplacement(HomeScreen.route());
-          },
-        );
+        MsaRouter.instance.pushReplacement(SignInScreen.route());
       },
     );
     Widget cancelButton = TextButton(
@@ -139,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Authentication"),
-      content: Text("Do you want to Sign-in or Sign-Up?"),
+      content: Text("Do you want to Sign-In or Sign-Up?"),
       actions: [
         cancelButton,
         signInButton,

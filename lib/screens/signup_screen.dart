@@ -8,7 +8,7 @@ import 'package:umich_msa/screens/splash_screen.dart';
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
-  static String routeName = 'userAuthScreen';
+  static String routeName = 'signUpScreen';
   static Route<SignUpScreen> route() {
     return MaterialPageRoute<SignUpScreen>(
       settings: RouteSettings(name: routeName),

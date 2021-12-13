@@ -12,6 +12,7 @@ Future<void> main() async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: ThemeData(fontFamily: "Cronos-Pro"),
       title: "UMICH MSA",

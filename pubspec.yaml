@@ -76,6 +76,9 @@ flutter:
     - assets/images/icon64.png
     - assets/images/logo.png
     - assets/images/splashScreen.jpg
+    - assets/images/half.png
+    - assets/images/quarter.png
+    - assets/images/full.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
