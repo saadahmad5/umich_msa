@@ -24,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 238, 238, 238),
+        color: Color.fromARGB(255, 255, 255, 255),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -44,18 +44,20 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Material(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 6.0,
-                      ),
-                      border: InputBorder.none,
-                      labelText: 'Email',
-                      hintText: 'uniqname@umich.edu',
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 238, 238, 238),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 8.0,
                     ),
+                    border: InputBorder.none,
+                    labelText: 'Email',
+                    hintText: 'uniqname@umich.edu',
                   ),
                 ),
               ),
@@ -63,19 +65,19 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 10),
               child: Material(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    obscureText: true,
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 6.0,
-                      ),
-                      border: InputBorder.none,
-                      labelText: 'Password',
-                      hintText: 'supersecret!',
+                child: TextField(
+                  obscureText: true,
+                  style: TextStyle(fontSize: 14),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 238, 238, 238),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 8.0,
                     ),
+                    border: InputBorder.none,
+                    labelText: 'Password',
+                    hintText: 'supersecret!',
                   ),
                 ),
               ),

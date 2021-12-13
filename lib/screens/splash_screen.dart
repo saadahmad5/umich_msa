@@ -24,80 +24,72 @@ class _SplashScreenState extends State<SplashScreen> {
   bool isAuth = false;
 
   Widget AuthenticatedWidgets() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 30, 48, 96),
-        image: DecorationImage(
-          image: AssetImage("assets/images/splashScreen.jpg"),
-          fit: BoxFit.cover,
-        ),
+    return Padding(
+      padding: EdgeInsets.only(top: 500),
+      child: SpinKitChasingDots(
+        color: Color.fromARGB(230, 252, 210, 12),
+        size: 60.0,
       ),
-      child: const Padding(
-          padding: EdgeInsets.only(top: 500),
-          child: SpinKitChasingDots(
-            color: Color.fromARGB(230, 252, 210, 12),
-            size: 60.0,
-          )),
     );
   }
 
   Widget UnauthenticatedWidgets() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 30, 48, 96),
-        image: DecorationImage(
-          image: AssetImage("assets/images/splashScreen.jpg"),
-          fit: BoxFit.cover,
-        ),
+    return Padding(
+      padding: EdgeInsets.only(top: 400),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton(
+            onPressed: () {
+              showAuthOptionsDialog(context);
+            },
+            child: Row(
+              children: [
+                Icon(Icons.people_outlined),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Text("MSA Admin"),
+              ],
+            ),
+            color: Colors.green[900],
+            textColor: Colors.white,
+          ),
+          SizedBox(
+            width: 16.0,
+          ),
+          RaisedButton(
+            onPressed: () {
+              MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
+            },
+            child: Row(
+              children: [
+                Icon(Icons.public_outlined),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Text("MSA Member"),
+              ],
+            ),
+            color: Colors.green[500],
+            textColor: Colors.white,
+          ),
+        ],
       ),
-      child: Padding(
-          padding: EdgeInsets.only(top: 400),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RaisedButton(
-                onPressed: () {
-                  showAuthOptionsDialog(context);
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.people_outlined),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Text("MSA Admin"),
-                  ],
-                ),
-                color: Colors.green[900],
-                textColor: Colors.white,
-              ),
-              SizedBox(
-                width: 16.0,
-              ),
-              RaisedButton(
-                onPressed: () {
-                  MsaRouter.instance.pushReplacement(HomeScreen.route());
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.public_outlined),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Text("MSA Member"),
-                  ],
-                ),
-                color: Colors.green[500],
-                textColor: Colors.white,
-              )
-            ],
-          )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return isAuth ? AuthenticatedWidgets() : UnauthenticatedWidgets();
+    return Container(
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 255, 255, 255),
+          image: DecorationImage(
+            image: AssetImage("assets/images/half.png"),
+            fit: BoxFit.contain,
+          ),
+        ),
+        child: isAuth ? AuthenticatedWidgets() : UnauthenticatedWidgets());
   }
 
   showAuthOptionsDialog(BuildContext context) {
