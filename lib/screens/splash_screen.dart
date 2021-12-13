@@ -50,38 +50,40 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       child: Padding(
-          padding: EdgeInsets.only(top: 500),
+          padding: EdgeInsets.only(top: 400),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RaisedButton(
                 onPressed: () {
-                  MsaRouter.instance.pushReplacement(SignUpScreen.route());
+                  showAuthOptionsDialog(context);
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.person_add_alt_1_outlined),
+                    Icon(Icons.people_outlined),
                     SizedBox(
                       width: 8.0,
                     ),
-                    Text("Sign Up"),
+                    Text("MSA Admin"),
                   ],
                 ),
-                color: Colors.blue[900],
+                color: Colors.green[900],
                 textColor: Colors.white,
               ),
               SizedBox(
                 width: 16.0,
               ),
               RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  MsaRouter.instance.pushReplacement(HomeScreen.route());
+                },
                 child: Row(
                   children: [
-                    Icon(Icons.person_outlined),
+                    Icon(Icons.public_outlined),
                     SizedBox(
                       width: 8.0,
                     ),
-                    Text("Sign In"),
+                    Text("MSA Member"),
                   ],
                 ),
                 color: Colors.green[500],
@@ -95,6 +97,63 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return isAuth ? AuthenticatedWidgets() : UnauthenticatedWidgets();
+  }
+
+  showAuthOptionsDialog(BuildContext context) {
+    // set up the buttons
+    Widget signInButton = TextButton(
+      child: Text(
+        "Sign-In",
+        style: TextStyle(color: Colors.blue),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        setState(() => isAuth = true);
+        Future.delayed(
+          const Duration(milliseconds: 2000),
+          () {
+            MsaRouter.instance.pushReplacement(HomeScreen.route());
+          },
+        );
+      },
+    );
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(color: Colors.red),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget signUpButton = TextButton(
+      child: Text(
+        "Sign-Up",
+        style: TextStyle(color: Colors.green),
+      ),
+      onPressed: () {
+        MsaRouter.instance.pushReplacement(SignUpScreen.route());
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Authentication"),
+      content: Text("Do you want to Sign-in or Sign-Up?"),
+      actions: [
+        cancelButton,
+        signInButton,
+        signUpButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override

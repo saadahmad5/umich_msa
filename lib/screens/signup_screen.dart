@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/home_screen.dart';
+import 'package:umich_msa/screens/splash_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             icon: Image.asset("assets/images/icon64.png"), onPressed: null),
         iconTheme: IconThemeData(color: Colors.yellow),
         backgroundColor: const Color.fromARGB(255, 30, 48, 96),
-        title: Text(
+        title: const Text(
           'Welcome to UMICH\'s MSA',
           style: TextStyle(
             color: Color.fromARGB(255, 252, 210, 12),
@@ -169,6 +170,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   cancel() {
-    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
+    _currentStep == 0
+        ? MsaRouter.instance.pushReplacement(SplashScreen.route())
+        : _currentStep > 0
+            ? setState(() => _currentStep -= 1)
+            : null;
   }
 }
