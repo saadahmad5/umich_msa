@@ -166,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   continued() {
     _currentStep < 2
         ? setState(() => _currentStep += 1)
-        : MsaRouter.instance.pushReplacement(HomeScreen.route());
+        : MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
   }
 
   cancel() {
