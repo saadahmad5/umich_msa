@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text("MSA Admin"),
               ],
             ),
-            color: Colors.green[900],
+            color: Colors.blue[800],
             textColor: Colors.white,
           ),
           SizedBox(
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text("MSA Member"),
               ],
             ),
-            color: Colors.green[500],
+            color: Colors.green[700],
             textColor: Colors.white,
           ),
         ],

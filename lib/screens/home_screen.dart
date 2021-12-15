@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umich_msa/screens/splash_screen.dart';
+import 'package:umich_msa/screens/widgets/map_widget.dart';
+import '../msa_router.dart';
+import '../icons/mosque_icons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-                icon: Image.asset("assets/images/icon64.png"), onPressed: null),
+                icon: Image.asset("assets/images/icon64.png"),
+                onPressed: () {
+                  MsaRouter.instance.pushAndRemoveUntil(SplashScreen.route());
+                }),
             iconTheme: IconThemeData(color: Colors.yellow),
             backgroundColor: const Color.fromARGB(255, 30, 48, 96),
             // bottom: const TabBar(
@@ -43,28 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 16.0),
             ),
           ),
-          body: Column(
-            children: [
-              Container(
-                child: Text(
-                  "Reflection Rooms",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontFamily: "Cronos-Pro",
-                      fontSize: 24.0),
-                ),
-                alignment: AlignmentGeometry.lerp(
-                    Alignment.center, Alignment.center, 0),
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-              ),
-            ],
-          ),
-          // const TabBarView(
-          //   children: [
-          //     Icon(Icons.access_alarm_outlined),
-          //     Icon(Icons.add_task_outlined)
-          //   ],
-          // ),
+          body: MapWidget(),
           bottomNavigationBar: BottomNavigationBar(
             unselectedItemColor: Colors.white,
             selectedItemColor: Color.fromARGB(230, 252, 210, 12),
@@ -73,9 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
             currentIndex: 0, // this will be set when a new tab is tapped
             items: [
               const BottomNavigationBarItem(
-                  icon: Icon(Icons.space_dashboard_outlined), label: 'Salah'),
+                  icon: Icon(Mosque.mosque_black_outlined), label: 'Map'),
               const BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today_outlined), label: 'Events'),
+                  icon: Icon(Icons.calendar_today_outlined), label: 'Calendar'),
               const BottomNavigationBarItem(
                   icon: Icon(Icons.info_outline), label: 'About'),
             ],

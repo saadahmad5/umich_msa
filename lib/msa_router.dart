@@ -3,16 +3,10 @@ import 'package:flutter/material.dart';
 
 class MsaRouter {
   factory MsaRouter() => _router;
-
   MsaRouter._();
-
   static final MsaRouter _router = MsaRouter._();
-
   static MsaRouter get instance => _router;
-
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  String initialRoute = SplashScreen.routeName;
 
   Widget home = const SplashScreen();
 
