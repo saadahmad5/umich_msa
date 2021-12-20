@@ -23,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color.fromARGB(255, 255, 255, 255),
       ),
       child: SingleChildScrollView(
@@ -32,12 +32,11 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
               child: Center(
-                child: Center(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage('assets/images/quarter.png'),
-                    ),
+                child: Container(
+                  child: const Image(
+                    image: AssetImage('assets/images/quarter.png'),
                   ),
+                  alignment: Alignment.center,
                 ),
               ),
             ),
