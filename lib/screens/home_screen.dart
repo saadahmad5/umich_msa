@@ -24,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   static const List<BottomNavigationBarItem> navBarItems = [
     const BottomNavigationBarItem(
+        icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
+    const BottomNavigationBarItem(
         icon: Icon(Mosque.mosque_black_outlined), label: 'Map'),
     const BottomNavigationBarItem(
         icon: Icon(Icons.calendar_today_outlined), label: 'Calendar'),
@@ -31,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icon(Icons.info_outline), label: 'About'),
   ];
   static const List<Widget> _widgetOptions = <Widget>[
+    Text('Dashboard'),
     MapWidget(),
     EventsWidget(),
     Text(

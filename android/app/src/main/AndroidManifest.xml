@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.umich_msa">
+    
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
    <application
         android:label="umich_msa"
         android:icon="@mipmap/ic_launcher">
@@ -39,6 +45,6 @@
             android:value="2" />
         <meta-data 
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC75LewoFvUzuArN8UltjS6m6kWSluUJcU"/>
+            android:value="AIzaSyC75LewoFvUzuArN8UltjS6m6kWSluUJcU"/>        
     </application>
 </manifest>
