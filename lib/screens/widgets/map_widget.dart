@@ -72,63 +72,63 @@ class _MapWidgetState extends State<MapWidget> {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
+            child: ButtonBar(
               children: [
-                ButtonBar(
-                  children: [
-                    ElevatedButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_pin),
-                          Padding(padding: EdgeInsets.only(right: 4.0)),
-                          Text(
-                            'My Location',
-                          )
-                        ],
-                      ),
-                      onPressed: () {
-                        _controller.animateCamera(
-                            CameraUpdate.newCameraPosition(CameraPosition(
-                                target: LatLng(
-                                    myLocation.latitude, myLocation.longitude),
-                                zoom: 12)));
-                      },
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.map_outlined),
-                          Padding(padding: EdgeInsets.only(right: 4.0)),
-                          Text(
-                            'Back to Default View',
-                          ),
-                        ],
-                      ),
-                      onPressed: () {
-                        _controller.animateCamera(
-                            CameraUpdate.newCameraPosition(CameraPosition(
-                          target: LatLng(42.2733150, -83.7380000),
-                          zoom: 12,
-                        )));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: Text(
+                ElevatedButton(
+                  child: Row(
+                    children: [
+                      Icon(Icons.location_pin),
+                      Padding(padding: EdgeInsets.only(right: 4.0)),
+                      Text(
                         'My Location',
+                      )
+                    ],
+                  ),
+                  onPressed: () {
+                    _location.onLocationChanged.listen((l) {
+                      myLocation.latitude = l.latitude;
+                      myLocation.longitude = l.longitude;
+                    });
+                    _controller.animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(
+                                myLocation.latitude, myLocation.longitude),
+                            zoom: 12)));
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.map_outlined),
+                      Padding(padding: EdgeInsets.only(right: 4.0)),
+                      Text(
+                        'Back to Default View',
                       ),
-                      onPressed: () {},
-                    ),
-                    ElevatedButton(
-                      child: Text(
-                        'My Location',
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                )
+                    ],
+                  ),
+                  onPressed: () {
+                    _controller.animateCamera(
+                        CameraUpdate.newCameraPosition(CameraPosition(
+                      target: LatLng(42.2733150, -83.7380000),
+                      zoom: 12,
+                    )));
+                  },
+                ),
+                ElevatedButton(
+                  child: Text(
+                    'My Location',
+                  ),
+                  onPressed: () {},
+                ),
+                ElevatedButton(
+                  child: Text(
+                    'My Location',
+                  ),
+                  onPressed: () {},
+                ),
               ],
             ),
           ),
@@ -141,6 +141,7 @@ class _MapWidgetState extends State<MapWidget> {
     //markers to place on map
     setState(() {
       markers.add(Marker(
+        onTap: () => {showBottomModal('MSA Union')},
         //add first marker
         markerId: MarkerId('Michigan Union'),
         position: LatLng(42.2750492, -83.7438536), //position of marker
@@ -170,6 +171,24 @@ class _MapWidgetState extends State<MapWidget> {
     });
 
     return markers;
+  }
+
+  void showBottomModal(String name) {
+    print({'saad', name});
+    showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => Container(
+        height: 200,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(name),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
