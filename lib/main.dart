@@ -17,7 +17,7 @@ Future<void> main() async {
       theme: ThemeData(fontFamily: "Cronos-Pro"),
       title: "UMICH MSA",
       navigatorKey: MsaRouter.instance.navigatorKey,
-      home: MsaRouter.instance.home,
+      home: MsaRouter.instance.homeAsSplashScreen,
     ));
   }, (error, stackTrace) async {
     print('error: $error');

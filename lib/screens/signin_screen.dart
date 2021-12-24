@@ -35,6 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Container(
                   child: const Image(
                     image: AssetImage('assets/images/quarter.png'),
+                    fit: BoxFit.none,
                   ),
                   alignment: Alignment.center,
                 ),

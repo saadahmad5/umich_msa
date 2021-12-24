@@ -8,7 +8,7 @@ class MsaRouter {
   static MsaRouter get instance => _router;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  Widget home = const SplashScreen();
+  Widget homeAsSplashScreen = const SplashScreen();
 
   Future<T?> push<T extends Object>(Route<T> route) async {
     return navigatorKey.currentState!.push(route);

@@ -31,7 +31,7 @@ class _EventsWidgetState extends State<EventsWidget> {
       endDay: DateTime(
           DateTime.now().year, DateTime.now().month + 3, DateTime.now().day),
       initialSelectedDay: DateTime.now(),
-      initialCalendarFormat: CalendarFormat.week,
+      initialCalendarFormat: CalendarFormat.twoWeeks,
       calendarController: _calendarController, //required
       locale: 'en_US',
     );
