@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 
+import '../constants.dart';
 import '../msa_router.dart';
 import 'home_screen.dart';
 
@@ -20,6 +25,12 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
