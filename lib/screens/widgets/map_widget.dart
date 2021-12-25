@@ -1,9 +1,11 @@
-import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
-import '../../models/coordinates.dart';
+import 'package:umich_msa/constants.dart';
+import 'package:umich_msa/models/room.dart';
+import 'package:umich_msa/models/coordinates.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -42,110 +44,78 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     var availWidgetHeight = MediaQuery.of(context).size.height;
     var availWidgetWidth = MediaQuery.of(context).size.width;
-    double mapHeight;
-    if (Platform.isAndroid) {
-      mapHeight = availWidgetHeight - 210;
-    } else if (Platform.isIOS) {
-      mapHeight = availWidgetHeight - 260;
-    } else {
-      throw Exception('Unhandled Operating System');
-    }
 
-    return SizedBox(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SizedBox(
-                height: mapHeight,
-                width: availWidgetWidth,
-                child: GoogleMap(
-                  compassEnabled: true,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  buildingsEnabled: false,
-                  mapToolbarEnabled: true,
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(42.2733150, -83.7380000),
-                    zoom: 12,
-                  ),
-                  onMapCreated: _onMapCreated,
-                  markers: getmarkers(),
-                ),
-              ),
-            ],
+    return Scaffold(
+      body: SizedBox(
+        height: availWidgetHeight,
+        width: availWidgetWidth,
+        child: GoogleMap(
+          compassEnabled: true,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+          buildingsEnabled: false,
+          mapToolbarEnabled: false,
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(MSAConstants.getInitialMapCoordinates().latitude,
+                MSAConstants.getInitialMapCoordinates().longitude),
+            zoom: 12,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ButtonBar(
-              children: [
-                ElevatedButton(
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_pin),
-                      Padding(padding: EdgeInsets.only(right: 4.0)),
-                      Text(
-                        'My Location',
-                      )
-                    ],
-                  ),
-                  onPressed: () {
-                    _location.onLocationChanged.listen((l) {
-                      myLocation.latitude = l.latitude;
-                      myLocation.longitude = l.longitude;
-                    });
-                    _controller.animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            target: LatLng(
-                                myLocation.latitude, myLocation.longitude),
-                            zoom: 12)));
-                  },
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.map_outlined),
-                      Padding(padding: EdgeInsets.only(right: 4.0)),
-                      Text(
-                        'Back to Default View',
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    _controller.animateCamera(
-                        CameraUpdate.newCameraPosition(CameraPosition(
-                      target: LatLng(42.2733150, -83.7380000),
-                      zoom: 12,
-                    )));
-                  },
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.deepOrange),
-                  child: Row(
-                    children: [
-                      Icon(Icons.maps_home_work_outlined),
-                      Padding(padding: EdgeInsets.only(right: 4.0)),
-                      Text(
-                        'View List of Ref. Rooms',
-                      ),
-                    ],
-                  ),
-                  onPressed: () {},
-                ),
-                ElevatedButton(
-                  child: Text(
-                    'My Location',
-                  ),
-                  onPressed: () {},
-                ),
-              ],
+          onMapCreated: _onMapCreated,
+          markers: getmarkers(),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 28.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            FloatingActionButton(
+              tooltip: 'My Location',
+              backgroundColor: Colors.green[700],
+              onPressed: () {
+                _location.onLocationChanged.listen((l) {
+                  myLocation.latitude = l.latitude;
+                  myLocation.longitude = l.longitude;
+                });
+                _controller.animateCamera(
+                    CameraUpdate.newCameraPosition(CameraPosition(
+                        target: LatLng(
+                          myLocation.latitude,
+                          myLocation.longitude,
+                        ),
+                        zoom: 12)));
+              },
+              child: const Icon(Icons.location_pin),
             ),
-          ),
-        ],
+            FloatingActionButton(
+              tooltip: 'Default View',
+              backgroundColor: Colors.blue[800],
+              onPressed: () {
+                _controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(
+                        MSAConstants.getInitialMapCoordinates().latitude,
+                        MSAConstants.getInitialMapCoordinates().longitude,
+                      ),
+                      zoom: 12,
+                    ),
+                  ),
+                );
+              },
+              child: const Icon(Icons.map_outlined),
+            ),
+            FloatingActionButton(
+              backgroundColor: Colors.deepPurple,
+              tooltip: 'Show as List',
+              onPressed: () {},
+              child: const Icon(Icons.business_outlined),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -153,67 +123,103 @@ class _MapWidgetState extends State<MapWidget> {
   Set<Marker> getmarkers() {
     // markers to place on map
     var listOfRooms = getReflectionRooms();
-    listOfRooms.then((value) => value.forEach((element) {
-          setState(() {
-            markers.add(Marker(
-              onTap: () => {showBottomModal(element.description)},
-              markerId: MarkerId(element.name),
-              position: LatLng(
-                  element.coordinates.latitude, element.coordinates.longitude),
-              infoWindow: InfoWindow(
-                title: element.name,
-                snippet: element.description,
-              ),
-              icon: element.mCard
-                  ? BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueRed)
-                  : BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen),
-            ));
-          });
-        }));
+    listOfRooms.then(
+      (value) => value.forEach(
+        (element) {
+          setState(
+            () {
+              markers.add(
+                Marker(
+                  markerId: MarkerId(element.name),
+                  position: LatLng(element.coordinates.latitude,
+                      element.coordinates.longitude),
+                  infoWindow: InfoWindow(
+                    title: element.name,
+                    snippet: element.description,
+                    onTap: () => {_showRoomDetailsDialog(element)},
+                  ),
+                  icon: element.mCard
+                      ? BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueRed)
+                      : BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueGreen),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
 
     return markers;
   }
 
-  void showBottomModal(String name) {
-    print({'saad', name});
-    showModalBottomSheet<String>(
+  Future<void> _showRoomDetailsDialog(Room room) async {
+    return showDialog<void>(
       context: context,
-      builder: (context) => Container(
-        height: 200,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(name),
-            ],
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            room.name,
+            style: const TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
-      ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Center(
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    imageUrl: room.imageUrl,
+                  ),
+                ),
+                Text(room.description),
+                Text(room.room),
+                Text('Near ' + room.whereAt + ' campus'),
+                room.mCard
+                    ? const Text(
+                        'MCard Required',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      )
+                    : const Text(
+                        'MCard not required',
+                        style: TextStyle(
+                          color: Colors.green,
+                        ),
+                      ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Start Navigation',
+                style: TextStyle(
+                  color: Colors.green,
+                ),
+              ),
+              onPressed: () {},
+            ),
+            TextButton(
+              child: const Text(
+                'Dismiss',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
-
-/*Column(
-  children: [
-    Container(
-      child: Text(
-        "Reflection Rooms",
-        style: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontFamily: "Cronos-Pro",
-            fontSize: 24.0),
-      ),
-      alignment: AlignmentGeometry.lerp(
-          Alignment.center, Alignment.center, 0),
-      padding: EdgeInsets.symmetric(vertical: 10.0),
-    ),
-  ],
-),
-// const TabBarView(
-//   children: [
-//     Icon(Icons.access_alarm_outlined),
-//     Icon(Icons.add_task_outlined)
-//   ],
-// ),*/

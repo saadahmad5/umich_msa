@@ -29,16 +29,19 @@ Future<List<Room>> getReflectionRooms() async {
   List<QueryDocumentSnapshot> queryDocument = listOfReflectionRooms.docs;
   List<Room> rooms = <Room>[];
   for (var element in queryDocument) {
-    Room room = Room();
+    if (element.exists) {
+      Room room = Room();
 
-    room.coordinates.assignValues(element.get('coordinates'));
-    room.description = element.get('description');
-    room.imageUrl = element.get('imageUrl');
-    room.mCard = element.get('mCard');
-    room.name = element.get('name');
-    room.room = element.get('room');
+      room.coordinates.assignGeoPointValues(element.get('coordinates'));
+      room.description = element.get('description');
+      room.imageUrl = element.get('imageUrl');
+      room.mCard = element.get('mCard');
+      room.name = element.get('name');
+      room.room = element.get('room');
+      room.whereAt = element.get('whereAt');
 
-    rooms.add(room);
+      rooms.add(room);
+    }
   }
   return rooms;
 }

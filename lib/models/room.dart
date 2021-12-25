@@ -7,6 +7,7 @@ class Room {
   late bool mCard;
   late String name;
   late String room;
+  late String whereAt;
 
   Room() {
     coordinates = Coordinates();
