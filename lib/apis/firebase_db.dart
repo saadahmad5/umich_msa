@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:umich_msa/models/room.dart';
 import '../constants.dart';
 
 getUsers() async {
-  print({'lol', MSAConstants.getDbRootPath() + 'users/'});
+  //print({'lol', MSAConstants.getDbRootPath() + 'users/'});
   var userRef = FirebaseFirestore.instance
       .doc(MSAConstants.getDbRootPath() + 'users/' + 'RfRAxMmssyxxQChro4GX/');
 
@@ -18,4 +19,26 @@ getUsers() async {
       print({'here', element.data()});
     });
   });
+}
+
+Future<List<Room>> getReflectionRooms() async {
+  var refRoomRef = FirebaseFirestore.instance
+      .collection(MSAConstants.getDbRootPath() + 'rooms/');
+
+  QuerySnapshot listOfReflectionRooms = await refRoomRef.get();
+  List<QueryDocumentSnapshot> queryDocument = listOfReflectionRooms.docs;
+  List<Room> rooms = <Room>[];
+  for (var element in queryDocument) {
+    Room room = Room();
+
+    room.coordinates.assignValues(element.get('coordinates'));
+    room.description = element.get('description');
+    room.imageUrl = element.get('imageUrl');
+    room.mCard = element.get('mCard');
+    room.name = element.get('name');
+    room.room = element.get('room');
+
+    rooms.add(room);
+  }
+  return rooms;
 }

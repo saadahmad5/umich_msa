@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:umich_msa/apis/firebase_db.dart';
 import '../../models/coordinates.dart';
 
 class MapWidget extends StatefulWidget {
@@ -33,12 +34,17 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var availWidgetHeight = MediaQuery.of(context).size.height;
     var availWidgetWidth = MediaQuery.of(context).size.width;
     double mapHeight;
     if (Platform.isAndroid) {
-      mapHeight = availWidgetHeight - 240;
+      mapHeight = availWidgetHeight - 210;
     } else if (Platform.isIOS) {
       mapHeight = availWidgetHeight - 260;
     } else {
@@ -118,8 +124,15 @@ class _MapWidgetState extends State<MapWidget> {
                   },
                 ),
                 ElevatedButton(
-                  child: Text(
-                    'My Location',
+                  style: ElevatedButton.styleFrom(primary: Colors.deepOrange),
+                  child: Row(
+                    children: [
+                      Icon(Icons.maps_home_work_outlined),
+                      Padding(padding: EdgeInsets.only(right: 4.0)),
+                      Text(
+                        'View List of Ref. Rooms',
+                      ),
+                    ],
                   ),
                   onPressed: () {},
                 ),
@@ -138,37 +151,27 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   Set<Marker> getmarkers() {
-    //markers to place on map
-    setState(() {
-      markers.add(Marker(
-        onTap: () => {showBottomModal('MSA Union')},
-        //add first marker
-        markerId: MarkerId('Michigan Union'),
-        position: LatLng(42.2750492, -83.7438536), //position of marker
-        infoWindow: InfoWindow(
-          //popup info
-          title: 'Michigan Union',
-          snippet: 'Room 404',
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen), //Icon for Marker
-      ));
-
-      markers.add(Marker(
-        //add second marker
-        markerId: MarkerId('Trotter'),
-        position: LatLng(42.2771045, -83.7432598), //position of marker
-        infoWindow: InfoWindow(
-          //popup info
-          title: 'Trotter MC',
-          snippet: 'Room 401',
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueAzure), //Icon for Marker
-      ));
-
-      //add more markers here
-    });
+    // markers to place on map
+    var listOfRooms = getReflectionRooms();
+    listOfRooms.then((value) => value.forEach((element) {
+          setState(() {
+            markers.add(Marker(
+              onTap: () => {showBottomModal(element.description)},
+              markerId: MarkerId(element.name),
+              position: LatLng(
+                  element.coordinates.latitude, element.coordinates.longitude),
+              infoWindow: InfoWindow(
+                title: element.name,
+                snippet: element.description,
+              ),
+              icon: element.mCard
+                  ? BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueRed)
+                  : BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueGreen),
+            ));
+          });
+        }));
 
     return markers;
   }

@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Coordinates {
   late double latitude;
   late double longitude;
 
-  Coordinates() {
-    latitude = 0.0;
-    longitude = 0.0;
+  assignValues(GeoPoint geoPoint) {
+    latitude = geoPoint.latitude;
+    longitude = geoPoint.longitude;
   }
 }

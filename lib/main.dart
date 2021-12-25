@@ -2,9 +2,8 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:umich_msa/constants.dart';
 import 'msa_router.dart';
-
-const bool isInDebugMode = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +13,7 @@ Future<void> main() async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: MSAConstants.isDebug,
       themeMode: ThemeMode.system,
       theme: ThemeData(fontFamily: "Cronos-Pro"),
       title: "UMICH MSA",
@@ -32,7 +31,7 @@ Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) async {
     final dynamic exception = details.exception;
     final StackTrace? stackTrace = details.stack;
-    if (isInDebugMode) {
+    if (MSAConstants.isDebug) {
       print('Caught Framework Error!');
       // In development mode simply print to console.
       FlutterError.dumpErrorToConsole(details);
