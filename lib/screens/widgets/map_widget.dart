@@ -51,8 +51,13 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     getMarkers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var availWidgetHeight = MediaQuery.of(context).size.height;
     var availWidgetWidth = MediaQuery.of(context).size.width;
 
@@ -92,17 +97,16 @@ class _MapWidgetState extends State<MapWidget> {
                     tooltip: 'My Location',
                     backgroundColor: Colors.green[700],
                     onPressed: () {
-                      location.onLocationChanged.listen((l) {
-                        myLocation.latitude = l.latitude;
-                        myLocation.longitude = l.longitude;
-                      });
                       _googleMapController.animateCamera(
-                          CameraUpdate.newCameraPosition(CameraPosition(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
                               target: LatLng(
                                 myLocation.latitude,
                                 myLocation.longitude,
                               ),
-                              zoom: 12)));
+                              zoom: 12),
+                        ),
+                      );
                     },
                     child: const Icon(Icons.location_pin),
                   ),
