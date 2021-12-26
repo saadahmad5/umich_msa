@@ -46,6 +46,8 @@ dependencies:
   google_maps_flutter: ^2.0.10
   table_calendar: ^2.3.3
   location: ^3.2.4
+  maps_launcher: ^2.0.1
+  url_launcher: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -79,7 +81,6 @@ flutter:
   assets:
     - assets/images/icon64.png
     - assets/images/logo.png
-    - assets/images/splashScreen.jpg
     - assets/images/half.png
     - assets/images/quarter.png
     - assets/images/full.png

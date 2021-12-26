@@ -4,8 +4,8 @@ import 'package:umich_msa/screens/splash_screen.dart';
 import 'package:umich_msa/screens/widgets/events_widget.dart';
 import 'package:umich_msa/screens/widgets/map_widget.dart';
 import 'package:umich_msa/screens/widgets/moreinfo_widget.dart';
-import '../msa_router.dart';
-import '../icons/mosque_icons.dart';
+import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/icons/mosque_icons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,14 +24,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   static const List<BottomNavigationBarItem> navBarItems = [
-    const BottomNavigationBarItem(
+    BottomNavigationBarItem(
         icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
-    const BottomNavigationBarItem(
+    BottomNavigationBarItem(
         icon: Icon(Mosque.mosque_black_outlined), label: 'Ref. Rooms'),
-    const BottomNavigationBarItem(
+    BottomNavigationBarItem(
         icon: Icon(Icons.calendar_today_outlined), label: 'MSA Calendar'),
-    const BottomNavigationBarItem(
-        icon: Icon(Icons.info_outline), label: 'More Info'),
+    BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'More Info'),
   ];
   static const List<Widget> _widgetOptions = <Widget>[
     Text(

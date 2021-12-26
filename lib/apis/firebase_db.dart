@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umich_msa/models/room.dart';
-import '../constants.dart';
+import 'package:umich_msa/constants.dart';
 
 getUsers() async {
   //print({'lol', MSAConstants.getDbRootPath() + 'users/'});
