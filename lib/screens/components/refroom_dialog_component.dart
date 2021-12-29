@@ -19,12 +19,17 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Center(
-                child: CachedNetworkImage(
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  imageUrl: room.imageUrl,
-                  fit: BoxFit.contain,
+              SizedBox(
+                height: 200.0,
+                child: Center(
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    imageUrl: room.imageUrl,
+                    fit: BoxFit.contain,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error_outline_outlined),
+                  ),
                 ),
               ),
               const Padding(

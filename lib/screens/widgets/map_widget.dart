@@ -163,7 +163,7 @@ class _MapWidgetState extends State<MapWidget> {
                     room.coordinates.latitude, room.coordinates.longitude),
                 infoWindow: InfoWindow(
                   title: room.name,
-                  snippet: room.description,
+                  snippet: room.room,
                   onTap: () => {
                     showRoomDetailsDialog(context, room),
                   },
