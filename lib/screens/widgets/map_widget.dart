@@ -7,7 +7,6 @@ import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/models/coordinates.dart';
 import 'package:umich_msa/screens/components/refroom_dialog_component.dart';
-import 'package:umich_msa/screens/widgets/refrooms_widget.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -130,23 +129,14 @@ class _MapWidgetState extends State<MapWidget> {
                     child: const Icon(Icons.map_outlined),
                   ),
                   FloatingActionButton(
-                    heroTag: 'list',
-                    backgroundColor: Colors.deepPurple,
-                    tooltip: 'Show as List',
-                    onPressed: () {
-                      if (rooms.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RefRoomsWidget(
-                              rooms: rooms,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: const Icon(Icons.business_outlined),
-                  ),
+                    heroTag: 'addRefRoom',
+                    backgroundColor: Colors.deepOrange,
+                    tooltip: 'Add Ref. Room',
+                    onPressed: () {},
+                    child: const Icon(
+                      Icons.add,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -165,20 +155,20 @@ class _MapWidgetState extends State<MapWidget> {
           rooms = value;
         }),
         rooms.forEach(
-          (element) {
+          (room) {
             markers.add(
               Marker(
-                markerId: MarkerId(element.name),
-                position: LatLng(element.coordinates.latitude,
-                    element.coordinates.longitude),
+                markerId: MarkerId(room.name),
+                position: LatLng(
+                    room.coordinates.latitude, room.coordinates.longitude),
                 infoWindow: InfoWindow(
-                  title: element.name,
-                  snippet: element.description,
+                  title: room.name,
+                  snippet: room.description,
                   onTap: () => {
-                    showRoomDetailsDialog(context, element),
+                    showRoomDetailsDialog(context, room),
                   },
                 ),
-                icon: element.mCard
+                icon: room.mCard
                     ? BitmapDescriptor.defaultMarkerWithHue(
                         BitmapDescriptor.hueRed)
                     : BitmapDescriptor.defaultMarkerWithHue(
@@ -189,8 +179,10 @@ class _MapWidgetState extends State<MapWidget> {
         ),
       },
     )
-        .catchError((e) {
-      markers.clear();
-    });
+        .catchError(
+      (e) {
+        markers.clear();
+      },
+    );
   }
 }

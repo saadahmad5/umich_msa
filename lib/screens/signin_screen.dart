@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 
-import '../constants.dart';
-import '../msa_router.dart';
+import 'package:umich_msa/msa_router.dart';
 import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {

@@ -6,5 +6,5 @@ class Event {
   late String roomInfo;
   late String address;
 
-  Event(this.title);
+  Event(this.title, this.description);
 }
