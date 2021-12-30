@@ -71,6 +71,8 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                   Navigator.pop(context);
                   showNetworkErrorDialog(context);
                 } else {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                   MsaRouter.instance.pushReplacement(HomeScreen.route());
                 }
               }
