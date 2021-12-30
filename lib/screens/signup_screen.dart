@@ -70,9 +70,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 hintText: "uniqname@umich.edu"),
                           ),
                           Container(
-                              padding: EdgeInsets.only(top: 20.0),
-                              child: Text(
-                                  "An email with a passcode will be sent to this email address for verification")),
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Cronos-Pro'),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                          "An email with a passcode will be sent to "),
+                                  TextSpan(
+                                    text: "msa-eboard@umich.edu",
+                                    style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  TextSpan(text: " for verification"),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       isActive: _currentStep >= 0,
@@ -85,8 +103,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       content: Column(
                         children: <Widget>[
                           Container(
-                              child: Text(
-                                  "Please enter the passcode sent to your email address for verification")),
+                            child: RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Cronos-Pro'),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                          "Please enter the passcode sent to "),
+                                  TextSpan(
+                                    text: "msa-eboard@umich.edu",
+                                    style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  TextSpan(text: " for verification"),
+                                ],
+                              ),
+                            ),
+                          ),
                           TextFormField(
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
@@ -114,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       content: Column(
                         children: <Widget>[
                           Row(
-                            children: [
+                            children: const [
                               Text(
                                 "Set up a new password for your MSA account",
                                 textAlign: TextAlign.left,

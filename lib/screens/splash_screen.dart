@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/screens/components/member_dialog_component.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 import 'package:umich_msa/screens/signin_screen.dart';
 import 'package:umich_msa/screens/signup_screen.dart';
@@ -23,73 +26,72 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool isAuth = false;
 
-  Widget AuthenticatedWidgets() {
-    return Padding(
-      padding: EdgeInsets.only(top: 500),
-      child: SpinKitChasingDots(
-        color: Color.fromARGB(230, 252, 210, 12),
-        size: 60.0,
-      ),
+  Widget authenticatedWidgets() {
+    return SpinKitChasingDots(
+      color: MSAConstants.yellowColor,
+      size: 60.0,
     );
   }
 
-  Widget UnauthenticatedWidgets() {
-    return Padding(
-      padding: EdgeInsets.only(top: 400),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: () {
-              showAuthOptionsDialog(context);
-            },
-            child: Row(
-              children: [
-                Icon(Icons.people_outlined),
-                SizedBox(
-                  width: 8.0,
-                ),
-                Text("MSA Admin"),
-              ],
-            ),
-            color: Colors.blue[800],
-            textColor: Colors.white,
+  Widget unauthenticatedWidgets() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RaisedButton(
+          onPressed: () {
+            showAuthOptionsDialog(context);
+          },
+          child: Row(
+            children: [
+              Icon(Icons.people_outlined),
+              SizedBox(
+                width: 8.0,
+              ),
+              Text("MSA Admin"),
+            ],
           ),
-          SizedBox(
-            width: 16.0,
+          color: Colors.blue[800],
+          textColor: Colors.white,
+        ),
+        SizedBox(
+          width: 16.0,
+        ),
+        RaisedButton(
+          onPressed: () {
+            showMemberSignInDialog(context);
+            //MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
+          },
+          child: Row(
+            children: [
+              Icon(Icons.public_outlined),
+              SizedBox(
+                width: 8.0,
+              ),
+              Text("MSA Member"),
+            ],
           ),
-          RaisedButton(
-            onPressed: () {
-              MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
-            },
-            child: Row(
-              children: [
-                Icon(Icons.public_outlined),
-                SizedBox(
-                  width: 8.0,
-                ),
-                Text("MSA Member"),
-              ],
-            ),
-            color: Colors.green[700],
-            textColor: Colors.white,
-          ),
-        ],
-      ),
+          color: Colors.green[700],
+          textColor: Colors.white,
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 255, 255, 255),
-          image: DecorationImage(
-            image: AssetImage("assets/images/half.png"),
-            fit: BoxFit.contain,
-          ),
-        ),
-        child: isAuth ? AuthenticatedWidgets() : UnauthenticatedWidgets());
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 255, 255, 255),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset('assets/images/MSA LOGO.svg', height: 240),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 24.0)),
+          isAuth ? authenticatedWidgets() : unauthenticatedWidgets(),
+        ],
+      ),
+    );
   }
 
   showAuthOptionsDialog(BuildContext context) {

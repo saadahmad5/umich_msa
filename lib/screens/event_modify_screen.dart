@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/msa_router.dart';
 
 class EventModifyScreen extends StatefulWidget {
@@ -20,47 +21,110 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        // Try removing opacity to observe the lack of a blur effect and of sliding content.
-        backgroundColor: CupertinoColors.systemGrey.withOpacity(0.3),
-        middle: const Text('Add a new event'),
+      navigationBar: const CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.lightBackgroundGray,
+        middle: Text('Add a new MSA event'),
       ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 60.0),
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 600,
-              width: MediaQuery.of(context).size.width,
-              child: CupertinoDatePicker(
-                initialDateTime: DateTime.now(),
-                onDateTimeChanged: (dateTime) {},
+      child: Scaffold(
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Title',
+                    hintText: "MSA Mass Meeting",
+                  ),
+                ),
               ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.green,
-                  heroTag: 'save',
-                  child: const Icon(Icons.done),
-                  onPressed: () {},
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Description (optional)',
+                    hintText: "Event Details",
+                  ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(right: 10.0),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 600,
+                width: MediaQuery.of(context).size.width,
+                child: CupertinoDatePicker(
+                  initialDateTime: DateTime.now(),
+                  onDateTimeChanged: (dateTime) {},
                 ),
-                FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  heroTag: 'cancel',
-                  child: const Icon(Icons.cancel_outlined),
-                  onPressed: () {
-                    MsaRouter.instance.pop();
-                  },
+              ),
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.streetAddress,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Address',
+                    hintText: "Michigan Union, Ann Arbor, 48108",
+                  ),
                 ),
-              ],
-            ),
-          ],
+              ),
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Room',
+                    hintText: "Room 123, 1st floor",
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Colors.green,
+                    heroTag: 'save',
+                    child: const Icon(Icons.done),
+                    onPressed: () {},
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 10.0),
+                  ),
+                  FloatingActionButton(
+                    backgroundColor: Colors.red,
+                    heroTag: 'cancel',
+                    child: const Icon(Icons.cancel_outlined),
+                    onPressed: () {
+                      MsaRouter.instance.pop();
+                    },
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 20.0),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

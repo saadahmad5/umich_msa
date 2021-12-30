@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/constants.dart';
@@ -19,6 +21,21 @@ getUsers() async {
       print({'here', element.data()});
     });
   });
+}
+
+Future<bool> addMembers(String emailAddress) async {
+  var users = FirebaseFirestore.instance
+      .collection(MSAConstants.getDbRootPath() + 'users/');
+
+  var newUser = <String, String>{};
+  newUser[emailAddress] = emailAddress;
+  users.doc('members').set(newUser, SetOptions(merge: true)).then((value) {
+    return true;
+  }).catchError((e) {
+    return false;
+  });
+
+  return false;
 }
 
 Future<List<Room>> getReflectionRooms() async {

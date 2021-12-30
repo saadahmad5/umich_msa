@@ -17,6 +17,17 @@ class MSAConstants {
     return coordinates;
   }
 
+  static Color yellowColor = const Color.fromARGB(255, 252, 210, 12);
+  static Color blueColor = const Color.fromARGB(255, 30, 48, 96);
+
+  static Color grayTextBoxBackgroundColor =
+      const Color.fromARGB(255, 238, 238, 238);
+
+  static EdgeInsets textBoxPadding = const EdgeInsets.symmetric(
+    vertical: 6.0,
+    horizontal: 18.0,
+  );
+
   static String getDbRootPath() {
     String path = '';
 

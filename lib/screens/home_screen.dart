@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 import 'package:umich_msa/screens/widgets/events_widget.dart';
 import 'package:umich_msa/screens/widgets/map_widget.dart';
@@ -25,22 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
   static const List<BottomNavigationBarItem> navBarItems = [
     BottomNavigationBarItem(
-        icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
+        icon: Icon(Icons.calendar_today_outlined), label: 'Calendar'),
     BottomNavigationBarItem(
-        icon: Icon(Mosque.mosque_black_outlined), label: 'Ref. Rooms'),
-    BottomNavigationBarItem(
-        icon: Icon(Icons.calendar_today_outlined), label: 'MSA Calendar'),
+        icon: Icon(Mosque.mosque_black_outlined), label: 'Reflection Rooms'),
     BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'More Info'),
   ];
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'About',
-      style: TextStyle(
-        fontSize: 24,
-      ),
-    ),
-    MapWidget(),
     EventsWidget(),
+    MapWidget(),
     MoreInfoWidget()
   ];
 
@@ -60,21 +53,22 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               MsaRouter.instance.pushAndRemoveUntil(SplashScreen.route());
             }),
-        iconTheme: IconThemeData(color: Colors.yellow),
-        backgroundColor: const Color.fromARGB(255, 30, 48, 96),
-        title: const Text(
+        iconTheme: IconThemeData(color: MSAConstants.yellowColor),
+        backgroundColor: MSAConstants.blueColor,
+        title: Text(
           'UMICH Muslim Students\' Association',
           style: TextStyle(
-              color: Color.fromARGB(255, 252, 210, 12),
-              fontFamily: "Cronos-Pro",
-              fontSize: 16.0),
+            color: MSAConstants.yellowColor,
+            fontFamily: "Cronos-Pro",
+            fontSize: 16.0,
+          ),
         ),
       ),
       body: _widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.white,
-        selectedItemColor: Color.fromARGB(230, 252, 210, 12),
-        backgroundColor: Color.fromARGB(255, 30, 48, 96),
+        selectedItemColor: MSAConstants.yellowColor,
+        backgroundColor: MSAConstants.blueColor,
         type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,
         onTap: _onItemTapped,

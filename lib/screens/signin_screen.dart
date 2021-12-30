@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 
@@ -40,18 +41,11 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-              child: Center(
-                child: Container(
-                  child: const Image(
-                    image: AssetImage('assets/images/quarter.png'),
-                    fit: BoxFit.none,
-                  ),
-                  alignment: Alignment.center,
-                ),
-              ),
+              padding: const EdgeInsets.fromLTRB(0, 100, 0, 40),
+              child:
+                  SvgPicture.asset('assets/images/MSA LOGO.svg', height: 200),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Material(
                 child: TextField(
