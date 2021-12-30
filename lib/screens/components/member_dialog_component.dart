@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/networkerror_dialog_component.dart';
+import 'package:umich_msa/screens/components/pleasewait_dialog_component.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 
 Future<void> showMemberSignInDialog(BuildContext context) async {
@@ -62,12 +63,16 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
           ),
           TextButton(
             onPressed: () async {
+              showPleaseWaitDialog(context);
               if (_formKey.currentState!.validate()) {
                 bool response =
                     await addMembers(_memberEmailAddressController.text);
-                response
-                    ? MsaRouter.instance.pushReplacement(HomeScreen.route())
-                    : showNetworkErrorDialog(context);
+                if (response == false) {
+                  Navigator.pop(context);
+                  showNetworkErrorDialog(context);
+                } else {
+                  MsaRouter.instance.pushReplacement(HomeScreen.route());
+                }
               }
             },
             child: const Text(

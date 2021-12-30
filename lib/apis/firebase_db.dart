@@ -24,18 +24,23 @@ getUsers() async {
 }
 
 Future<bool> addMembers(String emailAddress) async {
+  bool response = false;
+
   var users = FirebaseFirestore.instance
       .collection(MSAConstants.getDbRootPath() + 'users/');
 
   var newUser = <String, String>{};
   newUser[emailAddress] = emailAddress;
-  users.doc('members').set(newUser, SetOptions(merge: true)).then((value) {
-    return true;
-  }).catchError((e) {
+  await users
+      .doc('members')
+      .set(newUser, SetOptions(merge: true))
+      .then((value) => response = true)
+      .timeout(const Duration(seconds: 5), onTimeout: () {
+    response = false;
     return false;
   });
 
-  return false;
+  return response;
 }
 
 Future<List<Room>> getReflectionRooms() async {
