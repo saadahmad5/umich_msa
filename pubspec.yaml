@@ -82,9 +82,6 @@ flutter:
   assets:
     - assets/images/icon64.png
     - assets/images/logo.png
-    - assets/images/half.png
-    - assets/images/quarter.png
-    - assets/images/full.png
     - assets/images/MSA LOGO.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
