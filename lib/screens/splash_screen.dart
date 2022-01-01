@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
         color: Colors.white,
         image: DecorationImage(
           image: AssetImage("assets/images/logoHalf.png"),
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.contain,
         ),
       ),
       child: Column(
