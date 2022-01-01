@@ -113,7 +113,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                   FloatingActionButton(
                     backgroundColor: Colors.red,
                     heroTag: 'cancel',
-                    child: const Icon(Icons.cancel_outlined),
+                    child: const Icon(Icons.close),
                     onPressed: () {
                       MsaRouter.instance.pop();
                     },

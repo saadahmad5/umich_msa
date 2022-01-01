@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/networkerror_dialog_component.dart';
@@ -6,6 +7,7 @@ import 'package:umich_msa/screens/components/pleasewait_dialog_component.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 
 Future<void> showMemberSignInDialog(BuildContext context) async {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   TextEditingController _memberEmailAddressController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -71,6 +73,10 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                   Navigator.pop(context);
                   showNetworkErrorDialog(context);
                 } else {
+                  final SharedPreferences prefs = await _prefs;
+                  prefs.setBool('isAuthenticated', true);
+                  prefs.setString(
+                      'userName', _memberEmailAddressController.text);
                   Navigator.pop(context);
                   Navigator.pop(context);
                   MsaRouter.instance.pushReplacement(HomeScreen.route());

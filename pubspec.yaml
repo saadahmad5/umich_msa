@@ -49,6 +49,7 @@ dependencies:
   maps_launcher: ^2.0.1
   url_launcher: ^6.0.5
   flutter_svg: ^0.19.3
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,7 @@ flutter:
   assets:
     - assets/images/icon64.png
     - assets/images/logo.png
+    - assets/images/logoHalf.png
     - assets/images/MSA LOGO.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see

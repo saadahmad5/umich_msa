@@ -65,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: <Widget>[
                           TextFormField(
                             keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                                 labelText: 'UMICH\'s Email Address',
                                 hintText: "uniqname@umich.edu"),
                           ),

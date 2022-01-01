@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:umich_msa/constants.dart';
@@ -24,16 +25,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late Future<bool> isAuthenticated;
   bool isAuth = false;
+  bool showAuthButtons = false;
 
-  Widget authenticatedWidgets() {
-    return SpinKitChasingDots(
-      color: MSAConstants.yellowColor,
-      size: 60.0,
-    );
-  }
-
-  Widget unauthenticatedWidgets() {
+  Widget authButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -42,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
             showAuthOptionsDialog(context);
           },
           child: Row(
-            children: [
+            children: const [
               Icon(Icons.people_outlined),
               SizedBox(
                 width: 8.0,
@@ -53,16 +50,15 @@ class _SplashScreenState extends State<SplashScreen> {
           color: Colors.blue[800],
           textColor: Colors.white,
         ),
-        SizedBox(
+        const SizedBox(
           width: 16.0,
         ),
         RaisedButton(
           onPressed: () {
             showMemberSignInDialog(context);
-            //MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
           },
           child: Row(
-            children: [
+            children: const [
               Icon(Icons.public_outlined),
               SizedBox(
                 width: 8.0,
@@ -79,16 +75,33 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isAuth) {
+      Future.delayed(
+        const Duration(milliseconds: 2000),
+        () {
+          MsaRouter.instance.pushAndRemoveUntil(HomeScreen.route());
+        },
+      );
+    }
+
     return Container(
       decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: Colors.white,
+        image: DecorationImage(
+          image: AssetImage("assets/images/logoHalf.png"),
+          fit: BoxFit.fitWidth,
+        ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          SvgPicture.asset('assets/images/MSA LOGO.svg', height: 240),
           const Padding(padding: EdgeInsets.symmetric(vertical: 24.0)),
-          isAuth ? authenticatedWidgets() : unauthenticatedWidgets(),
+          showAuthButtons
+              ? authButtons()
+              : SpinKitChasingDots(
+                  color: MSAConstants.yellowColor,
+                  size: 60.0,
+                ),
         ],
       ),
     );
@@ -97,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
   showAuthOptionsDialog(BuildContext context) {
     // set up the buttons
     Widget signInButton = TextButton(
-      child: Text(
+      child: const Text(
         "Sign-In",
         style: TextStyle(color: Colors.blue),
       ),
@@ -106,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen> {
       },
     );
     Widget cancelButton = TextButton(
-      child: Text(
+      child: const Text(
         "Cancel",
         style: TextStyle(color: Colors.red),
       ),
@@ -115,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen> {
       },
     );
     Widget signUpButton = TextButton(
-      child: Text(
+      child: const Text(
         "Sign-Up",
         style: TextStyle(color: Colors.green),
       ),
@@ -127,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Authentication"),
-      content: Text("Do you want to Sign-In or Sign-Up?"),
+      content: const Text("Do you want to Sign-In or Sign-Up?"),
       actions: [
         cancelButton,
         signInButton,
@@ -147,13 +160,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    if (isAuth) {
-      Future.delayed(
-        const Duration(milliseconds: 2000),
-        () {
-          MsaRouter.instance.pushReplacement(HomeScreen.route());
-        },
-      );
-    }
+    isAuthenticated = _prefs.then((SharedPreferences prefs) {
+      setState(() {
+        isAuth = prefs.getBool('isAuthenticated') ?? false;
+        if (!isAuth) {
+          showAuthButtons = true;
+        }
+      });
+      return isAuth;
+    });
   }
 }
