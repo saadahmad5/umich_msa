@@ -37,7 +37,7 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
               ),
               Text(room.description),
               Text(room.room),
-              Text('Near ' + room.whereAt + ' campus'),
+              Text('In the ' + room.whereAt + ' campus'),
               room.mCard
                   ? const Text(
                       'MCard Required',

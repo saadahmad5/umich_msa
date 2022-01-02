@@ -35,7 +35,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^0.7.0
   flutter_spinkit: ^5.1.0
-  path_provider: ^1.6.28
   cloud_firestore: ^0.16.0+1
   firebase_storage: ^7.0.0
   firebase_auth: ^0.20.1
@@ -49,7 +48,7 @@ dependencies:
   maps_launcher: ^2.0.1
   url_launcher: ^6.0.5
   flutter_svg: ^0.19.3
-  shared_preferences: ^0.5.12+4
+  shared_preferences: ^2.0.6
 
 dev_dependencies:
   flutter_test:
