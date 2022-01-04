@@ -1,8 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/event_modify_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventsWidget extends StatefulWidget {
   const EventsWidget({Key? key}) : super(key: key);
@@ -24,6 +29,18 @@ class _EventsWidgetState extends State<EventsWidget> {
     _eventController = TextEditingController();
     events = {};
     selectedEvents = [];
+
+    Event tempEvent = Event(
+        'Mini Q Seliman Ali',
+        'Placeholder for any description',
+        DateTime(2022, 1, 7, 17, 30),
+        'Room 100',
+        '530 S State St, Ann Arbor, MI 48109',
+        'https://www.instagram.com/p/CXaCTR_L11M/?utm_source=ig_web_copy_link',
+        'https://umich.zoom.us/j/1234567890');
+
+    events[DateTime(2022, 1, 7, 17, 30)] = [tempEvent];
+    //events[DateTime(2022, 1, 7, 17, 30)]?.add(tempEvent);
   }
 
   @override
@@ -38,7 +55,8 @@ class _EventsWidgetState extends State<EventsWidget> {
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.deepOrange,
           child: const Icon(Icons.add),
-          onPressed: () {
+          onPressed: () async {
+            //await _showAddDialog();
             MsaRouter.instance.push(EventModifyScreen.route());
           }),
       body: SingleChildScrollView(
@@ -57,7 +75,7 @@ class _EventsWidgetState extends State<EventsWidget> {
               locale: 'en_US',
               onDaySelected: (date, events, e) {
                 setState(() {
-                  print({'object', events, e});
+                  //print({'Available events: ', events});
                   selectedEvents = events;
                 });
               },
@@ -71,7 +89,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                   ),
                   child: Text(
                     date.day.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 todayDayBuilder: (context, date, events) => Container(
@@ -83,7 +101,9 @@ class _EventsWidgetState extends State<EventsWidget> {
                   ),
                   child: Text(
                     date.day.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -101,18 +121,122 @@ class _EventsWidgetState extends State<EventsWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ListTile(
-                              leading: Icon(Icons.album),
-                              title: Text(event.title),
-                              subtitle: Text(event.description),
+                              isThreeLine: true,
+                              title: Text(
+                                event.title,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.description,
+                                    maxLines: 3,
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 10.0),
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'Cronos-Pro'),
+                                      children: <TextSpan>[
+                                        const TextSpan(
+                                          text: 'Time: ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: DateFormat.jm()
+                                              .format(event.dateTime),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (event?.roomInfo?.isNotEmpty)
+                                    RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: 'Cronos-Pro'),
+                                        children: <TextSpan>[
+                                          const TextSpan(
+                                            text: 'At: ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(text: event?.roomInfo),
+                                        ],
+                                      ),
+                                    ),
+                                  if (event?.address?.isNotEmpty)
+                                    RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: 'Cronos-Pro'),
+                                        children: <TextSpan>[
+                                          const TextSpan(
+                                            text: 'Address: ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(text: event.address),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                TextButton(
-                                  child: const Text('Details'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
+                                if (event?.socialMediaLink?.isNotEmpty)
+                                  TextButton(
+                                    child: Row(
+                                      children: const [
+                                        Icon(Icons.link_outlined),
+                                        Text(
+                                          'Social Media',
+                                        )
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      await launch(event.socialMediaLink);
+                                    },
+                                  ),
+                                if (event?.meetingLink?.isNotEmpty)
+                                  TextButton(
+                                    child: Row(
+                                      children: const [
+                                        Icon(Icons.video_call_outlined),
+                                        Text('Start Meeting')
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      await launch(event.meetingLink);
+                                    },
+                                  ),
+                                if (event?.address?.isNotEmpty)
+                                  TextButton(
+                                    child: Row(
+                                      children: const [
+                                        Icon(Icons.directions_outlined),
+                                        Text('Start Navigation'),
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      await MapsLauncher.launchQuery(
+                                          event.address);
+                                    },
+                                  ),
                               ],
                             ),
                           ],
@@ -136,17 +260,6 @@ class _EventsWidgetState extends State<EventsWidget> {
             TextField(
               controller: _eventController,
             ),
-            TimePickerDialog(
-              initialTime: TimeOfDay.now(),
-              initialEntryMode: TimePickerEntryMode.input,
-            ),
-            DatePickerDialog(
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now(),
-              initialEntryMode: DatePickerEntryMode.inputOnly,
-              initialCalendarMode: DatePickerMode.day,
-            )
           ],
         ),
         actions: <Widget>[
@@ -159,11 +272,21 @@ class _EventsWidgetState extends State<EventsWidget> {
             onPressed: () {
               setState(() {
                 if (events[_calendarController.selectedDay] != null) {
-                  events[_calendarController.selectedDay]
-                      ?.add(Event(_eventController.text, 'Event Description'));
+                  events[_calendarController.selectedDay]?.add(
+                    Event(
+                      _eventController.text,
+                      'Event Description',
+                      DateTime.now(),
+                      '123',
+                      'Michigan Union',
+                      '',
+                      '',
+                    ),
+                  );
                 } else {
                   events[_calendarController.selectedDay] = [
-                    Event(_eventController.text, 'Event Description')
+                    Event(_eventController.text, 'Event Description',
+                        DateTime.now(), '123', 'Michigan Union', '', '')
                   ];
                 }
                 _eventController.clear();

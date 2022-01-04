@@ -62,22 +62,11 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                 height: MediaQuery.of(context).size.height - 600,
                 width: MediaQuery.of(context).size.width,
                 child: CupertinoDatePicker(
+                  minimumYear: DateTime.now().year,
+                  maximumYear: DateTime.now().year + 1,
+                  dateOrder: DatePickerDateOrder.ymd,
                   initialDateTime: DateTime.now(),
                   onDateTimeChanged: (dateTime) {},
-                ),
-              ),
-              Container(
-                padding: MSAConstants.textBoxPadding,
-                child: TextFormField(
-                  keyboardType: TextInputType.streetAddress,
-                  decoration: InputDecoration(
-                    contentPadding: MSAConstants.textBoxPadding,
-                    filled: true,
-                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
-                    border: InputBorder.none,
-                    labelText: 'Address',
-                    hintText: "Michigan Union, Ann Arbor, 48108",
-                  ),
                 ),
               ),
               Container(
@@ -89,8 +78,56 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                     filled: true,
                     fillColor: MSAConstants.grayTextBoxBackgroundColor,
                     border: InputBorder.none,
-                    labelText: 'Room',
-                    hintText: "Room 123, 1st floor",
+                    labelText: 'Social Media Link (optional)',
+                    hintText: "https://www.instagram.com/p/",
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+              ),
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Room (optional)',
+                    hintText: "Room 123, 1st floor, Michigan Union",
+                  ),
+                ),
+              ),
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.streetAddress,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Address (optional)',
+                    hintText: "530 State St., Ann Arbor, 48108",
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+              ),
+              Container(
+                padding: MSAConstants.textBoxPadding,
+                child: TextFormField(
+                  keyboardType: TextInputType.streetAddress,
+                  decoration: InputDecoration(
+                    contentPadding: MSAConstants.textBoxPadding,
+                    filled: true,
+                    fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                    border: InputBorder.none,
+                    labelText: 'Meeting Link (optional)',
+                    hintText: "https://umich.zoom.us/j/",
                   ),
                 ),
               ),
