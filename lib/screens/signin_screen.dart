@@ -3,14 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 
 import 'package:umich_msa/msa_router.dart';
 import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen();
+  const SignInScreen({Key? key}) : super(key: key);
 
   static String routeName = 'signInScreen';
   static Route<SignInScreen> route() {
@@ -28,7 +27,6 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    getUsers();
   }
 
   @override
@@ -66,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 10),
               child: Material(
                 child: TextField(

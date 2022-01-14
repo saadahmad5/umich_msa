@@ -4,23 +4,23 @@ import 'package:umich_msa/constants.dart';
 
 getUsers() async {
   //print({'lol', MSAConstants.getDbRootPath() + 'users/'});
-  var userRef = FirebaseFirestore.instance
-      .doc(MSAConstants.getDbRootPath() + 'users/' + 'RfRAxMmssyxxQChro4GX/');
+  // var userRef = FirebaseFirestore.instance
+  //     .doc(MSAConstants.getDbRootPath() + 'users/' + 'RfRAxMmssyxxQChro4GX/');
 
-  userRef.get().then((value) {
-    print(value.data());
-  });
+  // userRef.get().then((value) {
+  //   print(value.data());
+  // });
 
-  var users = FirebaseFirestore.instance
-      .collection(MSAConstants.getDbRootPath() + 'users/');
+  // var users = FirebaseFirestore.instance
+  //     .collection(MSAConstants.getDbRootPath() + 'users/');
 
-  users.get().then((values) {
-    values.docs.forEach((element) {
-      print({'here', element.data()});
-    });
-  });
+  // users.get().then((values) {
+  //   values.docs.forEach((element) {
+  //     print({'here', element.data()});
+  //   });
+  // });
 
-  users.doc().set({'role': 'saad'});
+  // users.doc().set({'role': 'saad'});
 }
 
 Future<bool> addMembers(String emailAddress) async {

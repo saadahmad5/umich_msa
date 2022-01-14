@@ -7,16 +7,15 @@ import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/member_dialog_component.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 import 'package:umich_msa/screens/signin_screen.dart';
-import 'package:umich_msa/screens/signup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen();
+  const SplashScreen({Key? key}) : super(key: key);
 
   static String routeName = 'splashScreen';
   static Route<SplashScreen> route() {
     return MaterialPageRoute<SplashScreen>(
       settings: RouteSettings(name: routeName),
-      builder: (BuildContext context) => SplashScreen(),
+      builder: (BuildContext context) => const SplashScreen(),
     );
   }
 
@@ -36,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
       children: [
         RaisedButton(
           onPressed: () {
-            showAuthOptionsDialog(context);
+            MsaRouter.instance.pushReplacement(SignInScreen.route());
           },
           child: Row(
             children: const [
@@ -87,15 +86,14 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        image: DecorationImage(
-          image: AssetImage("assets/images/logoHalf.png"),
-          fit: BoxFit.contain,
-        ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Padding(padding: EdgeInsets.symmetric(vertical: 24.0)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
+            child: SvgPicture.asset('assets/images/MSA LOGO.svg', height: 200),
+          ),
           showAuthButtons
               ? authButtons()
               : SpinKitChasingDots(
@@ -104,56 +102,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
         ],
       ),
-    );
-  }
-
-  showAuthOptionsDialog(BuildContext context) {
-    // set up the buttons
-    Widget signInButton = TextButton(
-      child: const Text(
-        "Sign-In",
-        style: TextStyle(color: Colors.blue),
-      ),
-      onPressed: () {
-        MsaRouter.instance.pushReplacement(SignInScreen.route());
-      },
-    );
-    Widget cancelButton = TextButton(
-      child: const Text(
-        "Cancel",
-        style: TextStyle(color: Colors.red),
-      ),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget signUpButton = TextButton(
-      child: const Text(
-        "Sign-Up",
-        style: TextStyle(color: Colors.green),
-      ),
-      onPressed: () {
-        MsaRouter.instance.pushReplacement(SignUpScreen.route());
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Authentication"),
-      content: const Text("Do you want to Sign-In or Sign-Up?"),
-      actions: [
-        cancelButton,
-        signInButton,
-        signUpButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 

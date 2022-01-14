@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -33,13 +32,15 @@ class _EventsWidgetState extends State<EventsWidget> {
     Event tempEvent = Event(
         'Mini Q Seliman Ali',
         'Placeholder for any description',
-        DateTime(2022, 1, 7, 17, 30),
+        DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day + 1, 17, 30),
         'Room 100',
         '530 S State St, Ann Arbor, MI 48109',
         'https://www.instagram.com/p/CXaCTR_L11M/?utm_source=ig_web_copy_link',
         'https://umich.zoom.us/j/1234567890');
 
-    events[DateTime(2022, 1, 7, 17, 30)] = [tempEvent];
+    events[DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day + 1, 17, 30)] = [tempEvent];
     //events[DateTime(2022, 1, 7, 17, 30)]?.add(tempEvent);
   }
 

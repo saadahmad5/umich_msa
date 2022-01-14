@@ -23,7 +23,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         backgroundColor: CupertinoColors.lightBackgroundGray,
-        middle: Text('Add a new MSA event'),
+        middle: Text('Modify the MSA event'),
       ),
       child: Scaffold(
         body: SingleChildScrollView(
@@ -126,7 +126,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                     filled: true,
                     fillColor: MSAConstants.grayTextBoxBackgroundColor,
                     border: InputBorder.none,
-                    labelText: 'Meeting Link (optional)',
+                    labelText: 'Virtual Meeting Link (optional)',
                     hintText: "https://umich.zoom.us/j/",
                   ),
                 ),
