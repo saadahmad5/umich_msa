@@ -85,6 +85,10 @@ flutter:
     - assets/images/logo.png
     - assets/images/logoHalf.png
     - assets/images/MSA LOGO.svg
+    - assets/images/instagram_icon.png
+    - assets/images/twitter_icon.png
+    - assets/images/facebook_icon.png
+    - assets/images/linktree_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

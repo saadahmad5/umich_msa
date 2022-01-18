@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         iconTheme: IconThemeData(color: MSAConstants.yellowColor),
         backgroundColor: MSAConstants.blueColor,
         title: Text(
-          'UMICH Muslim Students\' Association',
+          'UMICH Muslim Students Association',
           style: TextStyle(
             color: MSAConstants.yellowColor,
             fontFamily: "Cronos-Pro",

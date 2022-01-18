@@ -4,8 +4,11 @@ import 'models/coordinates.dart';
 
 class MSAConstants {
   static bool isDebug = true;
-  @protected
+  static String appName = "University of Michigan Muslims Students Association";
   static String appVersion = "1.0";
+  static String aboutMessage =
+      "This freely distributable app is developed for the Muslims Student Association (UMICH MSA) organization at the University of Michigan. If you have any suggestions or if you discover any bugs, please feel free to email me at ";
+  static String developersEmail = "saadahm@umich.edu";
   @protected
   static String dbVersion = "v2";
 
