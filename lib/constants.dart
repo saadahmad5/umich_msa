@@ -17,6 +17,13 @@ class MSAConstants {
     return coordinates;
   }
 
+  static List<String> campusLocations = [
+    'Central',
+    'North',
+    'South',
+    'Medical'
+  ];
+
   static Color yellowColor = const Color.fromARGB(255, 252, 210, 12);
   static Color blueColor = const Color.fromARGB(255, 30, 48, 96);
 

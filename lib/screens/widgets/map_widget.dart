@@ -6,7 +6,9 @@ import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/models/coordinates.dart';
+import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/refroom_dialog_component.dart';
+import 'package:umich_msa/screens/room_modify_screen.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -132,7 +134,9 @@ class _MapWidgetState extends State<MapWidget> {
                     heroTag: 'addRefRoom',
                     backgroundColor: Colors.deepOrange,
                     tooltip: 'Add Ref. Room',
-                    onPressed: () {},
+                    onPressed: () {
+                      MsaRouter.instance.push(RoomModifyScreen.route());
+                    },
                     child: const Icon(
                       Icons.add,
                     ),
