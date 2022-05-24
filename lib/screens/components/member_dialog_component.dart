@@ -84,7 +84,6 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                     prefs.setString(
                         'userName', _memberEmailAddressController.text);
                     prefs.setString('displayName', user.displayName);
-                    prefs.setString('affiliation', user.affiliation);
                     Navigator.pop(context);
                     Navigator.pop(context);
                     MsaRouter.instance.pushReplacement(HomeScreen.route());

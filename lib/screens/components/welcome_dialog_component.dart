@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/user.dart';
 
 Future<void> showWelcomeDialog(BuildContext context, User? user) async {
   String name = user?.displayName ?? '';
-  String affiliation = user?.affiliation ?? 'None';
 
   return showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Salams $name!'),
+        title: Text(
+          'Salams $name!',
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24.0,
+          ),
+        ),
         content: RichText(
             text: TextSpan(
                 style: const TextStyle(
                     color: Colors.black, fontFamily: 'Cronos-Pro'),
-                text:
-                    'Welcome from MSA!\n\nYou\'re Affiliated with UMICH as: $affiliation')),
+                text: MSAConstants.welcomeMessage)),
         actions: [
           TextButton(
             child: const Text(
-              'Dismiss',
+              'Alright, got it!',
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.green,
               ),
             ),
             onPressed: () {

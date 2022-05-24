@@ -8,7 +8,6 @@ Future<User?> getUserDetails(String uniqname) async {
     "person": {
       "displayName": null,
     },
-    "affiliation": null
   };
 
   String request = MSAConstants.mCommunityApi + uniqname;
@@ -18,10 +17,9 @@ Future<User?> getUserDetails(String uniqname) async {
     res = jsonDecode(response.body);
 
     String displayName = res['person']['displayName'].toString();
-    String affiliation = res['person']['affiliation'].toString();
-    //print('** response ' + displayName + ' as ' + affiliation.toString());
+    //print('** response ' + displayName);
     if (displayName != 'null') {
-      return User(displayName, affiliation);
+      return User(displayName);
     } else {
       return null;
     }

@@ -18,6 +18,13 @@ class MSAConstants {
   static String mCommunityApi =
       "https://mcommunity.umich.edu/mcPeopleService/people/";
 
+  static String welcomeMessage = """Welcome to the UMICH's MSA app!
+  \nThis app will help you to:
+  \n1. Find & navigate to the reflection rooms on the campus.
+  \n2. See MSA events on the calendar and get push notifications.
+  \n3. Quick links to the MSA resources/ social media.
+  \n4. Contact emails of the MSA Board members""";
+
   static Coordinates getInitialMapCoordinates() {
     Coordinates coordinates = Coordinates();
     return coordinates;
