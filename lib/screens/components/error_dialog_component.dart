@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-Future<void> showNetworkErrorDialog(BuildContext context) async {
+Future<void> showErrorDialog(BuildContext context, String error) async {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Network Error'),
-        content: const Text(
-            'Please make sure you have a working internet connection'),
+        title: const Text('Error'),
+        content: Text(error),
         actions: [
           TextButton(
             child: const Text(

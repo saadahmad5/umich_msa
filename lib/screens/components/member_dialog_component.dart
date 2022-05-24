@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
+import 'package:umich_msa/apis/mcommunity.dart';
+import 'package:umich_msa/models/user.dart';
 import 'package:umich_msa/msa_router.dart';
-import 'package:umich_msa/screens/components/networkerror_dialog_component.dart';
+import 'package:umich_msa/screens/components/error_dialog_component.dart';
 import 'package:umich_msa/screens/components/pleasewait_dialog_component.dart';
+import 'package:umich_msa/screens/components/welcome_dialog_component.dart';
 import 'package:umich_msa/screens/home_screen.dart';
 
 Future<void> showMemberSignInDialog(BuildContext context) async {
@@ -27,24 +30,19 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
+                      return 'Please enter your uniqname';
                     }
-                    if (value.contains(RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))) {
-                      var splittedEmailAddrs = value.split("@");
-                      if (splittedEmailAddrs[0].length <= 8 &&
-                          splittedEmailAddrs[1].endsWith('umich.edu')) {
-                        return null;
-                      }
-                      return 'Invalid UMICH email address';
+                    if (value.contains(RegExp(r"^[a-zA-Z]")) &&
+                        value.length <= 8) {
+                      return null;
                     }
-                    return 'Invalid email address';
+                    return 'Invalid UMICH uniqname';
                   },
                   keyboardType: TextInputType.emailAddress,
                   controller: _memberEmailAddressController,
                   decoration: const InputDecoration(
-                    labelText: 'UMICH Email Address',
-                    hintText: "Your uniqname email address",
+                    labelText: 'UMICH uniqname',
+                    hintText: "Your uniqname (username@umich.edu)",
                   ),
                 ),
               ],
@@ -71,15 +69,27 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                     await addMembers(_memberEmailAddressController.text);
                 if (response == false) {
                   Navigator.pop(context);
-                  showNetworkErrorDialog(context);
+                  showErrorDialog(context,
+                      'Please make sure you have a working internet connection');
                 } else {
-                  final SharedPreferences prefs = await _prefs;
-                  prefs.setBool('isAuthenticated', true);
-                  prefs.setString(
-                      'userName', _memberEmailAddressController.text);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  MsaRouter.instance.pushReplacement(HomeScreen.route());
+                  User? user =
+                      await getUserDetails(_memberEmailAddressController.text);
+                  if (user == null) {
+                    Navigator.pop(context);
+                    showErrorDialog(
+                        context, 'Please make sure your uniqname is correct');
+                  } else {
+                    final SharedPreferences prefs = await _prefs;
+                    prefs.setBool('isAuthenticated', true);
+                    prefs.setString(
+                        'userName', _memberEmailAddressController.text);
+                    prefs.setString('displayName', user.displayName);
+                    prefs.setString('affiliation', user.affiliation);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    MsaRouter.instance.pushReplacement(HomeScreen.route());
+                    showWelcomeDialog(context, user);
+                  }
                 }
               }
             },

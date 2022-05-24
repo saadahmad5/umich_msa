@@ -16,6 +16,7 @@ class MoreInfoWidget extends StatefulWidget {
 
 class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late String displayName = '';
   late String userName = '';
 
   @override
@@ -23,6 +24,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
     super.initState();
     _prefs.then((SharedPreferences prefs) {
       setState(() {
+        displayName = prefs.getString('displayName') ?? 'pleaseWait';
         userName = prefs.getString('userName') ?? 'pleaseWait';
       });
     });
@@ -46,39 +48,60 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             Column(
               children: [
                 Card(
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(Icons.info_rounded),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                              color: Colors.black, fontFamily: 'Cronos-Pro'),
-                          children: <TextSpan>[
-                            const TextSpan(text: "MSA member: "),
-                            TextSpan(
-                              text: userName,
-                              style: const TextStyle(
-                                  color: Colors.blueAccent,
-                                  fontStyle: FontStyle.italic),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(Icons.info_rounded),
+                          ),
+                          RichText(
+                            text: const TextSpan(
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Cronos-Pro'),
+                              children: <TextSpan>[
+                                TextSpan(text: "MSA member: "),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
+                            style:
+                                ElevatedButton.styleFrom(primary: Colors.red),
+                            child: const Text(
+                              'Logout',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () {
+                              logout();
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                       ),
-                      const Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.red),
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          logout();
-                        },
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(40.0, 0, 0, 8.0),
+                            child: RichText(
+                              text: TextSpan(
+                                text: displayName,
+                                style: const TextStyle(color: Colors.blueGrey),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: ' ($userName)',
+                                    style: const TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontStyle: FontStyle.italic),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
                     ],
                   ),
                 ),

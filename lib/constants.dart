@@ -15,6 +15,9 @@ class MSAConstants {
   static double defaultLatitude = 42.2733150;
   static double defaultLongitude = -83.7380000;
 
+  static String mCommunityApi =
+      "https://mcommunity.umich.edu/mcPeopleService/people/";
+
   static Coordinates getInitialMapCoordinates() {
     Coordinates coordinates = Coordinates();
     return coordinates;
