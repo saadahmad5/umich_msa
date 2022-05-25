@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/icons/mosque_icons.dart';
+import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 
@@ -19,9 +21,30 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   late String displayName = '';
   late String userName = '';
 
+  List<BoardMember> boardMembers = <BoardMember>[];
+
   @override
   void initState() {
     super.initState();
+
+    boardMembers.add(BoardMember("Dr. Mathew Schemann", "Chaplain",
+        "drmatthewsch@umfelicity.edu", "Chat with Chaplain", 4));
+
+    boardMembers.add(BoardMember("Mustafa Syed", "Brotherhood Chair",
+        "mustafa@umich.edu", "Something!", 2));
+
+    boardMembers.add(BoardMember("Danyal Syed Raza", "Operations",
+        "dsraza@umich.edu", "Office Hours!", 3));
+
+    boardMembers.add(BoardMember(
+        "Hassan Kadiri",
+        "President",
+        "hekadiri@umich.edu",
+        """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
+        0));
+
+    boardMembers.sort((first, second) => first.order.compareTo(second.order));
+
     _prefs.then((SharedPreferences prefs) {
       setState(() {
         displayName = prefs.getString('displayName') ?? 'pleaseWait';
@@ -242,7 +265,118 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                 ),
               ],
             ),
-            Icon(Icons.people_alt_rounded)
+            // When we swipe towards right in More Info
+
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Text(
+                      "MSA Board Members",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ...boardMembers.isEmpty
+                      ? {
+                          const Padding(padding: EdgeInsets.only(bottom: 20.0)),
+                          const Text('Please wait!'),
+                        }
+                      : {
+                          ...boardMembers.map(
+                            (member) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      isThreeLine: true,
+                                      title: Text(
+                                        member.name,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            member.position,
+                                            maxLines: 1,
+                                            style: const TextStyle(
+                                                fontStyle: FontStyle.italic),
+                                          ),
+                                          Row(
+                                            children: [
+                                              RichText(
+                                                text: const TextSpan(
+                                                  text: "Email: ",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontFamily: 'Cronos-Pro',
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Clipboard.setData(
+                                                          ClipboardData(
+                                                              text: member
+                                                                  .emailAddress))
+                                                      .then((value) => {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                content: Text(
+                                                                    "Email address copied to clipboard"),
+                                                              ),
+                                                            ),
+                                                          });
+                                                },
+                                                child: Text(
+                                                  member.emailAddress,
+                                                  style: const TextStyle(
+                                                    color: Colors.blue,
+                                                    fontFamily: 'Cronos-Pro',
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              style: const TextStyle(
+                                                  color: Colors.black54,
+                                                  fontFamily: 'Cronos-Pro'),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text: member.details,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        }
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -253,6 +387,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
     _prefs.then((SharedPreferences prefs) {
       prefs.remove('isAuthenticated');
       prefs.remove('userName');
+      prefs.remove('displayName');
     });
     MsaRouter.instance.pushReplacement(SplashScreen.route());
   }

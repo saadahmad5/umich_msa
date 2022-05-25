@@ -218,7 +218,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                                     child: Row(
                                       children: const [
                                         Icon(Icons.video_call_outlined),
-                                        Text('Start Meeting')
+                                        Text('Meeting')
                                       ],
                                     ),
                                     onPressed: () async {
@@ -230,7 +230,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                                     child: Row(
                                       children: const [
                                         Icon(Icons.directions_outlined),
-                                        Text('Start Navigation'),
+                                        Text('Navigate'),
                                       ],
                                     ),
                                     onPressed: () async {

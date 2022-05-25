@@ -14,6 +14,8 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
   TextEditingController _memberEmailAddressController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool enableButton = false;
+
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -32,17 +34,19 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your uniqname';
                     }
-                    if (value.contains(RegExp(r"^[a-zA-Z]")) &&
+                    if (value.contains(RegExp(r"^[^0-9]+$")) &&
                         value.length <= 8) {
+                      enableButton = true;
                       return null;
                     }
+                    enableButton = false;
                     return 'Invalid UMICH uniqname';
                   },
                   keyboardType: TextInputType.emailAddress,
                   controller: _memberEmailAddressController,
                   decoration: const InputDecoration(
                     labelText: 'UMICH uniqname',
-                    hintText: "Your uniqname (username@umich.edu)",
+                    hintText: "Enter uniqname",
                   ),
                 ),
               ],
@@ -63,33 +67,37 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
           ),
           TextButton(
             onPressed: () async {
-              showPleaseWaitDialog(context);
-              if (_formKey.currentState!.validate()) {
-                bool response =
-                    await addMembers(_memberEmailAddressController.text);
-                if (response == false) {
-                  Navigator.pop(context);
-                  showErrorDialog(context,
-                      'Please make sure you have a working internet connection');
-                } else {
-                  User? user =
-                      await getUserDetails(_memberEmailAddressController.text);
-                  if (user == null) {
+              if (enableButton) {
+                showPleaseWaitDialog(context);
+                if (_formKey.currentState!.validate()) {
+                  bool response =
+                      await addMembers(_memberEmailAddressController.text);
+                  if (response == false) {
                     Navigator.pop(context);
-                    showErrorDialog(
-                        context, 'Please make sure your uniqname is correct');
+                    showErrorDialog(context,
+                        'Please make sure you have a working internet connection');
                   } else {
-                    final SharedPreferences prefs = await _prefs;
-                    prefs.setBool('isAuthenticated', true);
-                    prefs.setString(
-                        'userName', _memberEmailAddressController.text);
-                    prefs.setString('displayName', user.displayName);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    MsaRouter.instance.pushReplacement(HomeScreen.route());
-                    showWelcomeDialog(context, user);
+                    User? user = await getUserDetails(
+                        _memberEmailAddressController.text);
+                    if (user == null) {
+                      Navigator.pop(context);
+                      showErrorDialog(
+                          context, 'Please make sure your uniqname is correct');
+                    } else {
+                      final SharedPreferences prefs = await _prefs;
+                      prefs.setBool('isAuthenticated', true);
+                      prefs.setString(
+                          'userName', _memberEmailAddressController.text);
+                      prefs.setString('displayName', user.displayName);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      MsaRouter.instance.pushReplacement(HomeScreen.route());
+                      showWelcomeDialog(context, user);
+                    }
                   }
                 }
+              } else {
+                null;
               }
             },
             child: const Text(
