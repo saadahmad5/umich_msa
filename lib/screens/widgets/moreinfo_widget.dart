@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/constants.dart';
-import 'package:umich_msa/icons/mosque_icons.dart';
 import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
@@ -26,6 +24,13 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   @override
   void initState() {
     super.initState();
+
+    boardMembers.add(BoardMember(
+        "Saad Ahmad",
+        "Developer",
+        "saadahm@umich.edu",
+        "Just a developer\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        5));
 
     boardMembers.add(BoardMember("Dr. Mathew Schemann", "Chaplain",
         "drmatthewsch@umfelicity.edu", "Chat with Chaplain", 4));
@@ -210,7 +215,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 2.0),
                 ),
-                Spacer(),
+                const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -403,23 +408,20 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
         applicationName: MSAConstants.appName,
         applicationVersion: 'Version: ' + MSAConstants.appVersion,
         children: [
-          Container(
-            //padding: const EdgeInsets.only(top: 20.0),
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                    color: Colors.black, fontFamily: 'Cronos-Pro'),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: MSAConstants.aboutMessage,
-                  ),
-                  TextSpan(
-                    text: MSAConstants.developersEmail,
-                    style: const TextStyle(
-                        color: Colors.blueAccent, fontStyle: FontStyle.italic),
-                  ),
-                ],
-              ),
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                  color: Colors.black, fontFamily: 'Cronos-Pro'),
+              children: <TextSpan>[
+                TextSpan(
+                  text: MSAConstants.aboutMessage,
+                ),
+                TextSpan(
+                  text: MSAConstants.developersEmail,
+                  style: const TextStyle(
+                      color: Colors.blueAccent, fontStyle: FontStyle.italic),
+                ),
+              ],
             ),
           ),
         ],

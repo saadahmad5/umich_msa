@@ -70,12 +70,11 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
               if (enableButton) {
                 showPleaseWaitDialog(context);
                 if (_formKey.currentState!.validate()) {
-                  bool response =
-                      await addMembers(_memberEmailAddressController.text);
+                  bool response = await hasGoodConnectivity();
                   if (response == false) {
                     Navigator.pop(context);
                     showErrorDialog(context,
-                        'Please make sure you have a working internet connection');
+                        'Please make sure you have a working internet connection or contact MSA Admin');
                   } else {
                     User? user = await getUserDetails(
                         _memberEmailAddressController.text);
@@ -84,6 +83,7 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                       showErrorDialog(
                           context, 'Please make sure your uniqname is correct');
                     } else {
+                      await addMembers(_memberEmailAddressController.text);
                       final SharedPreferences prefs = await _prefs;
                       prefs.setBool('isAuthenticated', true);
                       prefs.setString(
@@ -97,7 +97,9 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                   }
                 }
               } else {
-                null;
+                Navigator.pop(context);
+                showErrorDialog(context,
+                    'Please make sure you entered your valid uniqname in there');
               }
             },
             child: const Text(

@@ -23,7 +23,7 @@ class MSAConstants {
   \n1. Find & navigate to the reflection rooms on the campus.
   \n2. See MSA events on the calendar and get push notifications.
   \n3. Quick links to the MSA resources/ social media.
-  \n4. Contact emails of the MSA Board members""";
+  \n4. Contact details of the MSA Board members""";
 
   static Coordinates getInitialMapCoordinates() {
     Coordinates coordinates = Coordinates();
@@ -58,6 +58,18 @@ class MSAConstants {
     }
 
     path += dbVersion + '/';
+
+    return path;
+  }
+
+  static String getGeneralDbRootPath() {
+    String path = '';
+
+    if (isDebug) {
+      path += "test/";
+    } else {
+      path += "prod/";
+    }
 
     return path;
   }
