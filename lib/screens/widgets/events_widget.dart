@@ -29,7 +29,7 @@ class _EventsWidgetState extends State<EventsWidget> {
     events = {};
     selectedEvents = [];
 
-    Event tempEvent = Event(
+    Event tempEvent = Event.params(
         'Mini Q Seliman Ali',
         'Placeholder for any description',
         DateTime(DateTime.now().year, DateTime.now().month,
@@ -274,7 +274,7 @@ class _EventsWidgetState extends State<EventsWidget> {
               setState(() {
                 if (events[_calendarController.selectedDay] != null) {
                   events[_calendarController.selectedDay]?.add(
-                    Event(
+                    Event.params(
                       _eventController.text,
                       'Event Description',
                       DateTime.now(),
@@ -286,7 +286,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                   );
                 } else {
                   events[_calendarController.selectedDay] = [
-                    Event(_eventController.text, 'Event Description',
+                    Event.params(_eventController.text, 'Event Description',
                         DateTime.now(), '123', 'Michigan Union', '', '')
                   ];
                 }

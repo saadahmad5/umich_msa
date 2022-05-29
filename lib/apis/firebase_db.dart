@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/constants.dart';
 
@@ -85,4 +86,29 @@ Future<List<Room>> getReflectionRooms() async {
     }
   }
   return rooms;
+}
+
+Future<List<BoardMember>> getBoardMemberInfo() async {
+  List<BoardMember> boardMembers = <BoardMember>[];
+
+  try {
+    var boardMemberRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'boardmembers/');
+
+    QuerySnapshot listOfBoardMembers = await boardMemberRef.get();
+    List<QueryDocumentSnapshot> queryDocument = listOfBoardMembers.docs;
+    for (var element in queryDocument) {
+      if (element.exists) {
+        BoardMember boardMember = BoardMember.noparams();
+        boardMember.order = element.get('order');
+        boardMember.name = element.get('name');
+        boardMember.position = element.get('position');
+        boardMember.emailAddress = element.get('emailAddress');
+        boardMember.details = element.get('details');
+
+        boardMembers.add(boardMember);
+      }
+    }
+  } on Error catch (_) {}
+  return boardMembers;
 }

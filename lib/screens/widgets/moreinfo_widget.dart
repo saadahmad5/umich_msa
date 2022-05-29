@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/msa_router.dart';
@@ -18,37 +19,12 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String displayName = '';
   late String userName = '';
-
   List<BoardMember> boardMembers = <BoardMember>[];
 
   @override
   void initState() {
     super.initState();
-
-    boardMembers.add(BoardMember(
-        "Saad Ahmad",
-        "Developer",
-        "saadahm@umich.edu",
-        "Just a developer\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        5));
-
-    boardMembers.add(BoardMember("Dr. Mathew Schemann", "Chaplain",
-        "drmatthewsch@umfelicity.edu", "Chat with Chaplain", 4));
-
-    boardMembers.add(BoardMember("Mustafa Syed", "Brotherhood Chair",
-        "mustafa@umich.edu", "Something!", 2));
-
-    boardMembers.add(BoardMember("Danyal Syed Raza", "Operations",
-        "dsraza@umich.edu", "Office Hours!", 3));
-
-    boardMembers.add(BoardMember(
-        "Hassan Kadiri",
-        "President",
-        "hekadiri@umich.edu",
-        """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
-        0));
-
-    boardMembers.sort((first, second) => first.order.compareTo(second.order));
+    loadBoardMembers();
 
     _prefs.then((SharedPreferences prefs) {
       setState(() {
@@ -56,7 +32,23 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
         userName = prefs.getString('userName') ?? 'pleaseWait';
       });
     });
-    if (userName == 'pleaseWait') throw Exception('Unhandled Exception');
+  }
+
+  void loadBoardMembers() async {
+    await getBoardMemberInfo().then((value) => {
+          setState(() {
+            boardMembers = value;
+          }),
+          boardMembers
+              .sort((first, second) => first.order.compareTo(second.order))
+        });
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   @override

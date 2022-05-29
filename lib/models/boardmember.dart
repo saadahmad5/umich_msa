@@ -5,6 +5,8 @@ class BoardMember {
   late String details;
   late int order;
 
-  BoardMember(
+  BoardMember.params(
       this.name, this.position, this.emailAddress, this.details, this.order);
+
+  BoardMember.noparams();
 }

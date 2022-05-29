@@ -14,8 +14,6 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
   TextEditingController _memberEmailAddressController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool enableButton = false;
-
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -25,7 +23,7 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
         content: SizedBox(
           height: 90,
           child: Form(
-            autovalidate: true,
+            autovalidateMode: AutovalidateMode.always,
             key: _formKey,
             child: Column(
               children: <Widget>[
@@ -36,10 +34,8 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                     }
                     if (value.contains(RegExp(r"^[^0-9]+$")) &&
                         value.length <= 8) {
-                      enableButton = true;
                       return null;
                     }
-                    enableButton = false;
                     return 'Invalid UMICH uniqname';
                   },
                   keyboardType: TextInputType.emailAddress,
@@ -67,7 +63,10 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
           ),
           TextButton(
             onPressed: () async {
-              if (enableButton) {
+              if (_memberEmailAddressController.text
+                      .contains(RegExp(r"^[^0-9]+$")) &&
+                  _memberEmailAddressController.text.length <= 8 &&
+                  _memberEmailAddressController.text.isNotEmpty) {
                 showPleaseWaitDialog(context);
                 if (_formKey.currentState!.validate()) {
                   bool response = await hasGoodConnectivity();
