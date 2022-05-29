@@ -25,17 +25,19 @@ getUsers() async {
 
 Future<bool> hasGoodConnectivity() async {
   bool response = false;
-
-  var metaData = FirebaseFirestore.instance
-      .doc(MSAConstants.getGeneralDbRootPath() + 'metadata/');
-
-  await metaData
-      .get()
-      .then((value) => response = value.data()['enableApp'])
-      .timeout(const Duration(seconds: 5), onTimeout: () {
-    response = false;
+  try {
+    var metaData = FirebaseFirestore.instance
+        .doc(MSAConstants.getGeneralDbRootPath() + 'metadata/');
+    await metaData
+        .get()
+        .then((value) => response = value.data()['enableApp'])
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+  } on Error catch (_) {
     return false;
-  });
+  }
 
   return response;
 }
