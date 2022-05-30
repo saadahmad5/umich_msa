@@ -55,10 +55,12 @@ class _EventsWidgetState extends State<EventsWidget> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.deepOrange,
-          child: const Icon(Icons.add),
+          heroTag: 'refresh',
+          tooltip: 'Refresh',
+          child: const Icon(Icons.refresh_outlined),
           onPressed: () async {
             //await _showAddDialog();
-            MsaRouter.instance.push(EventModifyScreen.route());
+            //MsaRouter.instance.push(EventModifyScreen.route());
           }),
       body: SingleChildScrollView(
         child: Column(

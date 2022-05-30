@@ -49,16 +49,8 @@ class MSAConstants {
   );
 
   static String getDbRootPath() {
-    String path = '';
-
-    if (isDebug) {
-      path += "test/";
-    } else {
-      path += "prod/";
-    }
-
+    String path = getGeneralDbRootPath();
     path += dbVersion + '/';
-
     return path;
   }
 

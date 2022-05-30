@@ -131,14 +131,14 @@ class _MapWidgetState extends State<MapWidget> {
                     child: const Icon(Icons.map_outlined),
                   ),
                   FloatingActionButton(
-                    heroTag: 'addRefRoom',
+                    heroTag: 'refresh',
                     backgroundColor: Colors.deepOrange,
-                    tooltip: 'Add Ref. Room',
+                    tooltip: 'Refresh',
                     onPressed: () {
-                      MsaRouter.instance.push(RoomModifyScreen.route());
+                      //MsaRouter.instance.push(RoomModifyScreen.route());
                     },
                     child: const Icon(
-                      Icons.add,
+                      Icons.refresh_outlined,
                     ),
                   )
                 ],

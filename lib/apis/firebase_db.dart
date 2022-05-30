@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:umich_msa/models/boardmember.dart';
+import 'package:umich_msa/models/quicklink.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/constants.dart';
 
@@ -25,13 +26,13 @@ getUsers() async {
 }
 
 Future<bool> hasGoodConnectivity() async {
-  bool response = false;
+  bool? response = false;
   try {
-    var metaData = FirebaseFirestore.instance
-        .doc(MSAConstants.getGeneralDbRootPath() + 'metadata/');
-    await metaData
+    var cms = FirebaseFirestore.instance
+        .doc(MSAConstants.getGeneralDbRootPath() + 'cms/');
+    await cms
         .get()
-        .then((value) => response = value.data()['enableApp'])
+        .then((value) => response = value.data()['enableAppLogins'])
         .timeout(const Duration(seconds: 5), onTimeout: () {
       response = false;
       return false;
@@ -39,8 +40,25 @@ Future<bool> hasGoodConnectivity() async {
   } on Error catch (_) {
     return false;
   }
+  return response ?? false;
+}
 
-  return response;
+Future<bool> useMCommunityLogin() async {
+  bool? response = false;
+  try {
+    var cms = FirebaseFirestore.instance
+        .doc(MSAConstants.getGeneralDbRootPath() + 'cms/');
+    await cms
+        .get()
+        .then((value) => response = value.data()['enableMCommAuth'])
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+  } on Error catch (_) {
+    return false;
+  }
+  return response ?? false;
 }
 
 Future<bool> addMembers(String emailAddress) async {
@@ -111,4 +129,45 @@ Future<List<BoardMember>> getBoardMemberInfo() async {
     }
   } on Error catch (_) {}
   return boardMembers;
+}
+
+Future<List<QuickLink>> getQuickLinks() async {
+  List<QuickLink> quickLinks = <QuickLink>[];
+
+  try {
+    var quickLinkRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'quicklinks/');
+
+    QuerySnapshot listOfQuickLinks = await quickLinkRef.get();
+    List<QueryDocumentSnapshot> queryDocument = listOfQuickLinks.docs;
+    for (var element in queryDocument) {
+      if (element.exists) {
+        QuickLink quickLink = QuickLink.noparams();
+
+        quickLink.icon = element.get('icon');
+        quickLink.title = element.get('title');
+        quickLink.linkUrl = element.get('linkUrl');
+
+        quickLinks.add(quickLink);
+      }
+    }
+  } on Error catch (_) {}
+  return quickLinks;
+}
+
+Future<Map<String, dynamic>> getSocialMediaLinks() async {
+  dynamic resp;
+  try {
+    var smlinks = FirebaseFirestore.instance.doc(MSAConstants.getDbRootPath());
+    await smlinks
+        .get()
+        .then((value) => resp = value.data()['socialMediaLinks'])
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      resp = null;
+      return resp;
+    });
+  } on Error catch (_) {
+    return {};
+  }
+  return resp;
 }

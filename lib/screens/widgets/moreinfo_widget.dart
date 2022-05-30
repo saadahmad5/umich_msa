@@ -5,8 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/boardmember.dart';
+import 'package:umich_msa/models/quicklink.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MoreInfoWidget extends StatefulWidget {
   const MoreInfoWidget({Key? key}) : super(key: key);
@@ -20,10 +22,15 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   late String displayName = '';
   late String userName = '';
   List<BoardMember> boardMembers = <BoardMember>[];
+  List<QuickLink> quicklinks = <QuickLink>[];
+  Map<String, dynamic> socialMediaLinks = <String, String>{};
 
   @override
   void initState() {
     super.initState();
+
+    loadQuickLinks();
+    loadSocialMediaLinks();
     loadBoardMembers();
 
     _prefs.then((SharedPreferences prefs) {
@@ -41,6 +48,22 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
           }),
           boardMembers
               .sort((first, second) => first.order.compareTo(second.order))
+        });
+  }
+
+  void loadQuickLinks() async {
+    await getQuickLinks().then((value) => {
+          setState(() {
+            quicklinks = value;
+          })
+        });
+  }
+
+  void loadSocialMediaLinks() async {
+    await getSocialMediaLinks().then((value) => {
+          setState(() {
+            socialMediaLinks = value;
+          })
         });
   }
 
@@ -135,106 +158,80 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                     ),
                   ),
                 ),
-                Card(
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(CupertinoIcons.conversation_bubble),
-                      ),
-                      const Text('MSA Updates Chat'),
-                      const Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
-                        child: const Text(
-                          'Link',
-                          style: TextStyle(color: Colors.white),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: [
+                        ...quicklinks.map(
+                          (element) => Card(
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Icon(returnIcon(element.icon)),
+                                ),
+                                Text(element.title),
+                                const Spacer(),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.green),
+                                  child: const Text(
+                                    'Link',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () async {
+                                    await launch(element.linkUrl);
+                                  },
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
+                          ),
                         ),
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 2.0),
                 ),
-                Card(
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(Icons.chat_outlined),
-                      ),
-                      const Text('UM Salaah Group'),
-                      const Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
-                        child: const Text(
-                          'Link',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0),
-                ),
-                Card(
-                  child: Row(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(CupertinoIcons.doc_chart),
-                      ),
-                      const Text('Quran Khatam Spreadsheet'),
-                      const Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
-                        child: const Text(
-                          'Link',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0),
-                ),
-                const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await launch(socialMediaLinks['facebook']);
+                      },
                       icon: Image.asset(
                         'assets/images/facebook_icon.png',
                         scale: 2,
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await launch(socialMediaLinks['twitter']);
+                      },
                       icon: Image.asset(
                         'assets/images/twitter_icon.png',
                         scale: 2,
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await launch(socialMediaLinks['instagram']);
+                      },
                       icon: Image.asset(
                         'assets/images/instagram_icon.png',
                         scale: 2,
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await launch(socialMediaLinks['linktree']);
+                      },
                       icon: Image.asset(
                         'assets/images/linktree_icon.png',
                         scale: 2,
@@ -265,6 +262,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             // When we swipe towards right in More Info
 
             SingleChildScrollView(
+              scrollDirection: Axis.vertical,
               child: Column(
                 children: [
                   const Padding(
@@ -378,6 +376,20 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
         ),
       ),
     );
+  }
+
+  IconData returnIcon(String iconName) {
+    switch (iconName) {
+      case "chat":
+        return CupertinoIcons.conversation_bubble;
+      case "spreadsheet":
+        return CupertinoIcons.doc_chart;
+      case "info":
+        return Icons.info_outline;
+      case "form":
+        return CupertinoIcons.doc_checkmark;
+    }
+    return Icons.link_outlined;
   }
 
   void logout() {
