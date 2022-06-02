@@ -82,7 +82,7 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                       showErrorDialog(
                           context, 'Please make sure your uniqname is correct');
                     } else {
-                      await addMembers(_memberEmailAddressController.text);
+                      await addUsers(_memberEmailAddressController.text, false);
                       final SharedPreferences prefs = await _prefs;
                       prefs.setBool('isAuthenticated', true);
                       prefs.setString(

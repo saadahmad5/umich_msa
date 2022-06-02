@@ -21,6 +21,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String displayName = '';
   late String userName = '';
+  late bool isAdmin = false;
   List<BoardMember> boardMembers = <BoardMember>[];
   List<QuickLink> quicklinks = <QuickLink>[];
   Map<String, dynamic> socialMediaLinks = <String, String>{};
@@ -37,6 +38,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
       setState(() {
         displayName = prefs.getString('displayName') ?? 'pleaseWait';
         userName = prefs.getString('userName') ?? 'pleaseWait';
+        isAdmin = prefs.getBool('isAdmin') ?? false;
       });
     });
   }
@@ -100,16 +102,29 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                             child: Icon(Icons.info_rounded),
                           ),
                           RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontFamily: 'Cronos-Pro'),
                               children: <TextSpan>[
-                                TextSpan(text: "MSA member: "),
+                                isAdmin
+                                    ? const TextSpan(text: "MSA admin: ")
+                                    : const TextSpan(text: "MSA member: "),
                               ],
                             ),
                           ),
                           const Spacer(),
+                          if (isAdmin)
+                            (ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue),
+                              child: const Text(
+                                'Admin Panel',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            )),
+                          const SizedBox(width: 8),
                           ElevatedButton(
                             style:
                                 ElevatedButton.styleFrom(primary: Colors.red),
@@ -245,7 +260,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                           primary: MSAConstants.blueColor,
                           onPrimary: MSAConstants.yellowColor),
                       onPressed: () {
-                        showAboutDialog();
+                        showTheAboutDialog();
                       },
                       child: const Text("About MSA"),
                     ),
@@ -397,11 +412,12 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
       prefs.remove('isAuthenticated');
       prefs.remove('userName');
       prefs.remove('displayName');
+      prefs.remove('isAdmin');
     });
     MsaRouter.instance.pushReplacement(SplashScreen.route());
   }
 
-  showAboutDialog() async {
+  showTheAboutDialog() async {
     await showDialog(
       context: context,
       builder: (context) => AboutDialog(

@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
       children: [
         RaisedButton(
           onPressed: () {
-            MsaRouter.instance.pushReplacement(SignInScreen.route());
+            MsaRouter.instance.push(SignInScreen.route());
           },
           child: Row(
             children: const [

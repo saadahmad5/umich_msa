@@ -49,10 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-            icon: Image.asset("assets/images/icon64.png"),
-            onPressed: () {
-              MsaRouter.instance.pushAndRemoveUntil(SplashScreen.route());
-            }),
+            icon: Image.asset("assets/images/icon64.png"), onPressed: null),
         iconTheme: IconThemeData(color: MSAConstants.yellowColor),
         backgroundColor: MSAConstants.blueColor,
         title: Text(

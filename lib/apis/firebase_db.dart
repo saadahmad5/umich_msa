@@ -61,16 +61,15 @@ Future<bool> useMCommunityLogin() async {
   return response ?? false;
 }
 
-Future<bool> addMembers(String emailAddress) async {
+Future<bool> addUsers(String emailAddress, bool isAdmin) async {
   bool response = false;
 
-  var users = FirebaseFirestore.instance
-      .collection(MSAConstants.getDbRootPath() + 'users/');
+  var users = FirebaseFirestore.instance.collection('users/');
 
   var newUser = <String, String>{};
-  newUser[emailAddress] = emailAddress;
+  newUser[emailAddress] = DateTime.now().toString();
   await users
-      .doc('members')
+      .doc(isAdmin ? 'admins' : 'members')
       .set(newUser, SetOptions(merge: true))
       .then((value) => response = true)
       .timeout(const Duration(seconds: 5), onTimeout: () {
