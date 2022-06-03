@@ -147,54 +147,71 @@ class _SignInScreenState extends State<SignInScreen> {
                           });
                           _formKey.currentState!.reset();
                           showPleaseWaitDialog(context);
-                          Login login = await signIn(username, password);
-                          switch (login) {
-                            case Login.error:
-                              {
-                                Navigator.pop(context);
-                                showErrorDialog(context,
-                                    'Please make sure you have a working internet connection or contact MSA Admin');
-                                break;
-                              }
-                            case Login.invalidUsername:
-                              {
-                                Navigator.pop(context);
-                                showErrorDialog(context,
-                                    'This email address is not signed up for MSA admin access');
-                                break;
-                              }
-                            case Login.wrongPassword:
-                              {
-                                Navigator.pop(context);
-                                showErrorDialog(context,
-                                    'The credentials are wrong for this email address');
-                                break;
-                              }
-                            case Login.successful:
-                              {
-                                var uniqname = username.split("@");
-                                User? user = await getUserDetails(uniqname[0]);
-                                if (user == null) {
+                          bool response = await hasGoodConnectivity();
+                          if (response) {
+                            Login login = await signIn(username, password);
+                            switch (login) {
+                              case Login.error:
+                                {
                                   Navigator.pop(context);
                                   showErrorDialog(context,
-                                      'Please make sure your uniqname is correct');
-                                } else {
-                                  await addUsers(uniqname[0], true);
-                                  final SharedPreferences prefs = await _prefs;
-                                  prefs.setBool('isAuthenticated', true);
-                                  prefs.setBool('isAdmin', true);
-                                  prefs.setString('userName', uniqname[0]);
-                                  prefs.setString(
-                                      'displayName', user.displayName);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                  MsaRouter.instance
-                                      .pushReplacement(HomeScreen.route());
-                                  showWelcomeDialog(context, user);
+                                      'Please make sure you have a working internet connection or contact MSA Admin');
+                                  break;
                                 }
-
-                                break;
-                              }
+                              case Login.invalidUsername:
+                                {
+                                  Navigator.pop(context);
+                                  showErrorDialog(context,
+                                      'This email address is not signed up for MSA admin access');
+                                  break;
+                                }
+                              case Login.wrongPassword:
+                                {
+                                  Navigator.pop(context);
+                                  showErrorDialog(context,
+                                      'The credentials are wrong for this email address');
+                                  break;
+                                }
+                              case Login.successful:
+                                {
+                                  var uniqname = username.split("@");
+                                  User? user =
+                                      await getUserDetails(uniqname[0]);
+                                  if (user == null) {
+                                    Navigator.pop(context);
+                                    showErrorDialog(context,
+                                        'Please make sure your uniqname is correct');
+                                  } else {
+                                    await addUsers(uniqname[0], true);
+                                    final SharedPreferences prefs =
+                                        await _prefs;
+                                    await prefs.setBool(
+                                        'isAuthenticated', true);
+                                    await prefs.setBool('isAdmin', true);
+                                    await prefs.setString(
+                                        'userName', uniqname[0]);
+                                    await prefs.setString(
+                                        'displayName', user.displayName);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    MsaRouter.instance
+                                        .pushReplacement(HomeScreen.route());
+                                    showWelcomeDialog(context, user);
+                                  }
+                                  break;
+                                }
+                              default:
+                                {
+                                  Navigator.pop(context);
+                                  showErrorDialog(context,
+                                      'An unhandled exception has occured');
+                                  break;
+                                }
+                            }
+                          } else {
+                            Navigator.pop(context);
+                            showErrorDialog(context,
+                                'Please make sure you have a working internet connection or contact MSA Admin');
                           }
                         } else {
                           showErrorDialog(context,

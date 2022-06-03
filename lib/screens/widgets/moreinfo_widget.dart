@@ -57,7 +57,9 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
     await getQuickLinks().then((value) => {
           setState(() {
             quicklinks = value;
-          })
+          }),
+          quicklinks
+              .sort((first, second) => first.order.compareTo(second.order))
         });
   }
 

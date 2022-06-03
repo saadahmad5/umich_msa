@@ -146,6 +146,7 @@ Future<List<QuickLink>> getQuickLinks() async {
         quickLink.icon = element.get('icon');
         quickLink.title = element.get('title');
         quickLink.linkUrl = element.get('linkUrl');
+        quickLink.order = element.get('order');
 
         quickLinks.add(quickLink);
       }

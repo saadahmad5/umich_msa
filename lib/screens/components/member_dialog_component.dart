@@ -84,10 +84,10 @@ Future<void> showMemberSignInDialog(BuildContext context) async {
                     } else {
                       await addUsers(_memberEmailAddressController.text, false);
                       final SharedPreferences prefs = await _prefs;
-                      prefs.setBool('isAuthenticated', true);
-                      prefs.setString(
+                      await prefs.setBool('isAuthenticated', true);
+                      await prefs.setString(
                           'userName', _memberEmailAddressController.text);
-                      prefs.setString('displayName', user.displayName);
+                      await prefs.setString('displayName', user.displayName);
                       Navigator.pop(context);
                       Navigator.pop(context);
                       MsaRouter.instance.pushReplacement(HomeScreen.route());
