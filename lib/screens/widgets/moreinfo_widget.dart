@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:umich_msa/apis/firebase_auth.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/boardmember.dart';
@@ -409,13 +410,14 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
     return Icons.link_outlined;
   }
 
-  void logout() {
+  void logout() async {
     _prefs.then((SharedPreferences prefs) {
       prefs.remove('isAuthenticated');
       prefs.remove('userName');
       prefs.remove('displayName');
       prefs.remove('isAdmin');
     });
+    await logOut();
     MsaRouter.instance.pushReplacement(SplashScreen.route());
   }
 

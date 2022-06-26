@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum Login { successful, invalidUsername, wrongPassword, error }
+enum Logout { success, error }
 
 Future<Login> signIn(String emailAddress, String password) async {
   try {
@@ -16,4 +17,15 @@ Future<Login> signIn(String emailAddress, String password) async {
     }
   }
   return Login.successful;
+}
+
+Future<Logout> logOut() async {
+  try {
+    final _ = await FirebaseAuth.instance.signOut();
+  } on FirebaseAuthException catch (e) {
+    if (e.code.isNotEmpty) {
+      return Logout.error;
+    }
+  }
+  return Logout.success;
 }

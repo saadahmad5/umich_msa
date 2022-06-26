@@ -1,4 +1,4 @@
-class Event {
+class MsaEvent {
   late String title;
   late String description;
   late DateTime dateTime;
@@ -7,8 +7,13 @@ class Event {
   late String? socialMediaLink;
   late String? meetingLink;
 
-  Event.params(this.title, this.description, this.dateTime, this.roomInfo,
+  MsaEvent.params(this.title, this.description, this.dateTime, this.roomInfo,
       this.address, this.socialMediaLink, this.meetingLink);
 
-  Event.noparams();
+  MsaEvent.noparams();
+
+  @override
+  String toString() {
+    return "${title.toString()} at ${dateTime.toString()}";
+  }
 }

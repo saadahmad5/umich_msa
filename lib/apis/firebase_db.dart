@@ -1,29 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:umich_msa/models/boardmember.dart';
+import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/models/quicklink.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/constants.dart';
-
-getUsers() async {
-  //print({'lol', MSAConstants.getDbRootPath() + 'users/'});
-  // var userRef = FirebaseFirestore.instance
-  //     .doc(MSAConstants.getDbRootPath() + 'users/' + 'RfRAxMmssyxxQChro4GX/');
-
-  // userRef.get().then((value) {
-  //   print(value.data());
-  // });
-
-  // var users = FirebaseFirestore.instance
-  //     .collection(MSAConstants.getDbRootPath() + 'users/');
-
-  // users.get().then((values) {
-  //   values.docs.forEach((element) {
-  //     print({'here', element.data()});
-  //   });
-  // });
-
-  // users.doc().set({'role': 'saad'});
-}
 
 Future<bool> hasGoodConnectivity() async {
   bool? response = false;
@@ -170,4 +151,56 @@ Future<Map<String, dynamic>> getSocialMediaLinks() async {
     return {};
   }
   return resp;
+}
+
+Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
+  List<MsaEvent> events = <MsaEvent>[];
+
+  try {
+    DatabaseReference ref = FirebaseDatabase.instance.reference();
+    DataSnapshot response = await ref
+        .child(
+            "${MSAConstants.getDbRootPath()}/events/${focusedDay.year}-${focusedDay.month}/")
+        .once();
+
+    dynamic eventsInADay;
+    if (response.value.runtimeType.toString() ==
+        "_InternalLinkedHashMap<Object?, Object?>") {
+      eventsInADay = response.value;
+      if (eventsInADay.isNotEmpty) {
+        for (Map eventInADay in eventsInADay.values) {
+          for (Map rawEvent in eventInADay.values) {
+            MsaEvent event = MsaEvent.params(
+              rawEvent['title'],
+              rawEvent['description'],
+              DateTime.parse(rawEvent['dateTime']),
+              rawEvent['roomInfo'],
+              rawEvent['address'],
+              rawEvent['socialMediaLink'],
+              rawEvent['meetingLink'],
+            );
+            events.add(event);
+          }
+        }
+      }
+    } else if (response.value.runtimeType.toString() == "List<Object?>") {
+      eventsInADay = response.value[1];
+      for (Map rawEvent in eventsInADay.values) {
+        MsaEvent event = MsaEvent.params(
+          rawEvent['title'],
+          rawEvent['description'],
+          DateTime.parse(rawEvent['dateTime']),
+          rawEvent['roomInfo'],
+          rawEvent['address'],
+          rawEvent['socialMediaLink'],
+          rawEvent['meetingLink'],
+        );
+        events.add(event);
+      }
+    } else {
+      eventsInADay = [];
+    }
+  } on Error catch (_) {}
+
+  return events;
 }

@@ -130,17 +130,6 @@ class _MapWidgetState extends State<MapWidget> {
                     },
                     child: const Icon(Icons.map_outlined),
                   ),
-                  FloatingActionButton(
-                    heroTag: 'refresh',
-                    backgroundColor: Colors.deepOrange,
-                    tooltip: 'Refresh',
-                    onPressed: () {
-                      //MsaRouter.instance.push(RoomModifyScreen.route());
-                    },
-                    child: const Icon(
-                      Icons.refresh_outlined,
-                    ),
-                  )
                 ],
               ),
             ),
