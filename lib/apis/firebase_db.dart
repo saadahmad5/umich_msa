@@ -155,7 +155,7 @@ Future<Map<String, dynamic>> getSocialMediaLinks() async {
 
 Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
   List<MsaEvent> events = <MsaEvent>[];
-
+  print('** called api');
   try {
     DatabaseReference ref = FirebaseDatabase.instance.reference();
     DataSnapshot response = await ref

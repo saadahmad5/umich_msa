@@ -8,6 +8,7 @@ import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/event_modify_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class EventsWidget extends StatefulWidget {
   const EventsWidget({Key? key}) : super(key: key);
@@ -49,12 +50,22 @@ class _EventsWidgetState extends State<EventsWidget> {
     if (start.month == end.month) {
       eventsToShowOnCalendar =
           await getEventsForTheMonth(_calendarController.focusedDay);
-    } else {
+    } else if (start.month < end.month) {
       for (int _month = start.month; _month <= end.month; ++_month) {
         eventsToShowOnCalendar
             .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
       }
+    } else if (start.month > end.month) {
+      for (int _month = start.month; _month <= 12; ++_month) {
+        eventsToShowOnCalendar
+            .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
+      }
+      for (int _month = 1; _month <= end.month; ++_month) {
+        eventsToShowOnCalendar
+            .addAll(await getEventsForTheMonth(DateTime(end.year, _month)));
+      }
     }
+
     if (eventsToShowOnCalendar.isNotEmpty) {
       events.clear();
       addEventsToCalendar(eventsToShowOnCalendar);
@@ -97,11 +108,11 @@ class _EventsWidgetState extends State<EventsWidget> {
                 });
               },
               onCalendarCreated: (first, last, format) {
-                print("onCalendarCreated called + API");
+                //print("onCalendarCreated called + API" + first.toString() + " - " + last.toString());
                 refreshCalendarEvents(first, last);
               },
               onVisibleDaysChanged: (first, last, format) {
-                print("onVisibleDaysChanged called + API");
+                //print("onVisibleDaysChanged called + API" + first.toString() + " - " + last.toString());
                 refreshCalendarEvents(first, last);
               },
               builders: CalendarBuilders(
@@ -179,6 +190,12 @@ class _EventsWidgetState extends State<EventsWidget> {
                                         TextSpan(
                                           text: DateFormat.jm()
                                               .format(event.dateTime),
+                                        ),
+                                        TextSpan(
+                                          text: " (" +
+                                              timeago.format(event.dateTime,
+                                                  allowFromNow: true) +
+                                              ")",
                                         ),
                                       ],
                                     ),
