@@ -8,6 +8,7 @@ import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/models/quicklink.dart';
 import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/screens/admin_screen.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -125,7 +126,9 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                                 'Admin Panel',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                showAdminScreen();
+                              },
                             )),
                           const SizedBox(width: 8),
                           ElevatedButton(
@@ -408,6 +411,10 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
         return CupertinoIcons.doc_checkmark;
     }
     return Icons.link_outlined;
+  }
+
+  void showAdminScreen() {
+    MsaRouter.instance.push(AdminScreen.route());
   }
 
   void logout() async {

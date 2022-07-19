@@ -244,6 +244,23 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ],
               ),
+              const Padding(padding: EdgeInsets.only(bottom: 20)),
+              Container(
+                height: 40,
+                width: 120,
+                decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(5)),
+                child: TextButton(
+                  onPressed: () {
+                    // ToDo.
+                  },
+                  child: const Text(
+                    'Reset Password',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
               const Padding(padding: EdgeInsets.only(bottom: 300)),
             ],
           ),
