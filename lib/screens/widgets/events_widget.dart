@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/models/event.dart';
@@ -18,10 +19,12 @@ class EventsWidget extends StatefulWidget {
 }
 
 class _EventsWidgetState extends State<EventsWidget> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late CalendarController _calendarController;
   late TextEditingController _eventController;
   late Map<DateTime, List<MsaEvent>> events;
   late List<dynamic> selectedEvents;
+  late bool isAdmin = false;
 
   @override
   void initState() {
@@ -30,19 +33,11 @@ class _EventsWidgetState extends State<EventsWidget> {
     _eventController = TextEditingController();
     events = {};
     selectedEvents = [];
-
-    // MsaEvent tempEvent = MsaEvent.params(
-    //     'Mini Q Seliman Ali',
-    //     'Placeholder for any description',
-    //     DateTime(DateTime.now().year, DateTime.now().month,
-    //         DateTime.now().day + 1, 17, 30),
-    //     'Room 100',
-    //     '530 S State St, Ann Arbor, MI 48109',
-    //     'https://www.instagram.com/p/CXaCTR_L11M/?utm_source=ig_web_copy_link',
-    //     'https://umich.zoom.us/j/1234567890');
-
-    // events[DateTime(DateTime.now().year, DateTime.now().month,
-    //     DateTime.now().day + 1, 17, 30)] = [tempEvent];
+    _prefs.then((SharedPreferences prefs) {
+      setState(() {
+        isAdmin = prefs.getBool('isAdmin') ?? false;
+      });
+    });
   }
 
   refreshCalendarEvents(DateTime start, DateTime end) async {
@@ -81,12 +76,36 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //     backgroundColor: Colors.deepOrange,
-      //     heroTag: 'refresh',
-      //     tooltip: 'Refresh',
-      //     child: const Icon(Icons.refresh_outlined),
-      //     onPressed: () async {}),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            if (isAdmin)
+              FloatingActionButton(
+                  backgroundColor: Colors.green,
+                  heroTag: 'add',
+                  tooltip: 'Add Event',
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    MsaRouter.instance.push(EventModifyScreen.routeForAdd());
+                  }),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 6),
+            ),
+            FloatingActionButton(
+                backgroundColor: Colors.blue,
+                heroTag: 'today',
+                tooltip: 'Today',
+                child: const Icon(Icons.today_outlined),
+                onPressed: () {
+                  switchToToday();
+                }),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -156,15 +175,46 @@ class _EventsWidgetState extends State<EventsWidget> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            ListTile(
-                              isThreeLine: true,
-                              title: Text(
-                                event.title,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10.0, left: 16.0),
+                                  child: Text(
+                                    event.title,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const Spacer(),
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  tooltip: 'Edit MSA Event',
+                                  onPressed: () {
+                                    MsaRouter.instance.push(
+                                      EventModifyScreen.routeForEdit(
+                                        MsaEvent.params(
+                                            'title',
+                                            'description',
+                                            DateTime(2000, 12, 23),
+                                            'roomInfo',
+                                            'address',
+                                            'socialMediaLink',
+                                            'meetingLink'),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.close),
+                                  tooltip: 'Delete MSA Event',
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                            ListTile(
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -286,6 +336,9 @@ class _EventsWidgetState extends State<EventsWidget> {
                       ),
                     ),
                   ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 160.0),
+            )
           ],
         ),
       ),
@@ -311,52 +364,7 @@ class _EventsWidgetState extends State<EventsWidget> {
     }
   }
 
-  _showAddDialog() async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Add Event"),
-        content: Column(
-          children: [
-            TextField(
-              controller: _eventController,
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text(
-              "Save",
-              style:
-                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-            ),
-            onPressed: () {
-              setState(() {
-                if (events[_calendarController.selectedDay] != null) {
-                  events[_calendarController.selectedDay]?.add(
-                    MsaEvent.params(
-                      _eventController.text,
-                      'Event Description',
-                      DateTime.now(),
-                      '123',
-                      'Michigan Union',
-                      '',
-                      '',
-                    ),
-                  );
-                } else {
-                  events[_calendarController.selectedDay] = [
-                    MsaEvent.params(_eventController.text, 'Event Description',
-                        DateTime.now(), '123', 'Michigan Union', '', '')
-                  ];
-                }
-                _eventController.clear();
-                Navigator.pop(context);
-              });
-            },
-          )
-        ],
-      ),
-    );
+  switchToToday() {
+    _calendarController.setSelectedDay(DateTime.now());
   }
 }

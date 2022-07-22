@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:umich_msa/constants.dart';
+import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/msa_router.dart';
 
 class EventModifyScreen extends StatefulWidget {
   const EventModifyScreen({Key? key}) : super(key: key);
   static String routeName = 'eventModifyScreen';
-  static Route<EventModifyScreen> route() {
+
+  static bool _isEdit = false;
+  static MsaEvent _msaEvent = MsaEvent.noparams();
+
+  static Route<EventModifyScreen> routeForAdd() {
+    _isEdit = false;
+
+    return MaterialPageRoute<EventModifyScreen>(
+      settings: RouteSettings(name: routeName),
+      builder: (BuildContext context) => const EventModifyScreen(),
+    );
+  }
+
+  static Route<EventModifyScreen> routeForEdit(MsaEvent msaEvent) {
+    _isEdit = true;
+    _msaEvent = msaEvent;
+
     return MaterialPageRoute<EventModifyScreen>(
       settings: RouteSettings(name: routeName),
       builder: (BuildContext context) => const EventModifyScreen(),
@@ -18,12 +35,23 @@ class EventModifyScreen extends StatefulWidget {
 }
 
 class _EventModifyScreenState extends State<EventModifyScreen> {
+  late bool _isEdit;
+  late MsaEvent _msaEvent;
+  @override
+  void initState() {
+    super.initState();
+    _isEdit = EventModifyScreen._isEdit;
+    if (_isEdit) {
+      _msaEvent = EventModifyScreen._msaEvent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: CupertinoColors.lightBackgroundGray,
-        middle: Text('Modify the MSA event'),
+        middle: Text(_isEdit ? 'Modify the MSA event' : 'Add a new Event'),
       ),
       child: Scaffold(
         body: SingleChildScrollView(
@@ -147,14 +175,15 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                   const Padding(
                     padding: EdgeInsets.only(right: 10.0),
                   ),
-                  FloatingActionButton(
-                    backgroundColor: Colors.red,
-                    heroTag: 'cancel',
-                    child: const Icon(Icons.close),
-                    onPressed: () {
-                      MsaRouter.instance.pop();
-                    },
-                  ),
+                  if (_isEdit)
+                    FloatingActionButton(
+                      backgroundColor: Colors.red,
+                      heroTag: 'delete',
+                      child: const Icon(Icons.close),
+                      onPressed: () {
+                        MsaRouter.instance.pop();
+                      },
+                    ),
                   const Padding(
                     padding: EdgeInsets.only(right: 20.0),
                   ),
