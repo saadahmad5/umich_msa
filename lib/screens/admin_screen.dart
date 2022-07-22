@@ -15,23 +15,12 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      theme: const CupertinoThemeData(brightness: Brightness.light),
-      home: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          leading: CupertinoButton(
-            onPressed: () {
-              MsaRouter.instance.pop();
-            },
-            child: const Text(
-              'Back',
-              textScaleFactor: 0.7,
-              style: TextStyle(color: CupertinoColors.link),
-            ),
-          ),
-          middle: const Text('Admin Screen'),
-        ),
-        child: Center(
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Admin Screen'),
+      ),
+      child: CupertinoApp(
+        home: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: const [
