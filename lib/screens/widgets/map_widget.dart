@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/room.dart';
@@ -18,6 +19,8 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late bool isAdmin = false;
   final Set<Marker> markers = {};
   Coordinates myLocation = Coordinates();
   late GoogleMapController _googleMapController;
@@ -54,6 +57,11 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      setState(() {
+        isAdmin = prefs.getBool('isAdmin') ?? false;
+      });
+    });
     getMarkers();
   }
 
@@ -93,28 +101,19 @@ class _MapWidgetState extends State<MapWidget> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  FloatingActionButton(
-                    heroTag: 'location',
-                    tooltip: 'My Location',
-                    backgroundColor: Colors.green[700],
-                    onPressed: () {
-                      _googleMapController.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                              target: LatLng(
-                                myLocation.latitude,
-                                myLocation.longitude,
-                              ),
-                              zoom: 12),
-                        ),
-                      );
-                    },
-                    child: const Icon(Icons.location_pin),
-                  ),
+                  if (isAdmin)
+                    FloatingActionButton(
+                        backgroundColor: Colors.green[700],
+                        heroTag: 'add',
+                        tooltip: 'Add Ref. Room',
+                        child: const Icon(Icons.add),
+                        onPressed: () {
+                          showAddRoomScreen();
+                        }),
                   FloatingActionButton(
                     heroTag: 'default',
                     tooltip: 'Default View',
-                    backgroundColor: Colors.blue[800],
+                    backgroundColor: Colors.orange[800],
                     onPressed: () {
                       _googleMapController.animateCamera(
                         CameraUpdate.newCameraPosition(
@@ -130,6 +129,24 @@ class _MapWidgetState extends State<MapWidget> {
                     },
                     child: const Icon(Icons.map_outlined),
                   ),
+                  FloatingActionButton(
+                    heroTag: 'location',
+                    tooltip: 'My Location',
+                    backgroundColor: Colors.blue[800],
+                    onPressed: () {
+                      _googleMapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                              target: LatLng(
+                                myLocation.latitude,
+                                myLocation.longitude,
+                              ),
+                              zoom: 12),
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.location_pin),
+                  ),
                 ],
               ),
             ),
@@ -137,6 +154,14 @@ class _MapWidgetState extends State<MapWidget> {
         : const Center(
             child: CircularProgressIndicator(),
           );
+  }
+
+  showAddRoomScreen() async {
+    MsaRouter.instance
+        .push(
+          RoomModifyScreen.route(),
+        )
+        .then((value) => getMarkers());
   }
 
   getMarkers() {

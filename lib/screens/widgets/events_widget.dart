@@ -7,6 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
 import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/screens/components/confirmation_dialog_component.dart';
 import 'package:umich_msa/screens/event_modify_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -20,17 +21,15 @@ class EventsWidget extends StatefulWidget {
 
 class _EventsWidgetState extends State<EventsWidget> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late bool isAdmin = false;
   late CalendarController _calendarController;
-  late TextEditingController _eventController;
   late Map<DateTime, List<MsaEvent>> events;
   late List<dynamic> selectedEvents;
-  late bool isAdmin = false;
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
-    _eventController = TextEditingController();
     events = {};
     selectedEvents = [];
     _prefs.then((SharedPreferences prefs) {
@@ -38,33 +37,6 @@ class _EventsWidgetState extends State<EventsWidget> {
         isAdmin = prefs.getBool('isAdmin') ?? false;
       });
     });
-  }
-
-  refreshCalendarEvents(DateTime start, DateTime end) async {
-    List<MsaEvent> eventsToShowOnCalendar = <MsaEvent>[];
-    if (start.month == end.month) {
-      eventsToShowOnCalendar =
-          await getEventsForTheMonth(_calendarController.focusedDay);
-    } else if (start.month < end.month) {
-      for (int _month = start.month; _month <= end.month; ++_month) {
-        eventsToShowOnCalendar
-            .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
-      }
-    } else if (start.month > end.month) {
-      for (int _month = start.month; _month <= 12; ++_month) {
-        eventsToShowOnCalendar
-            .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
-      }
-      for (int _month = 1; _month <= end.month; ++_month) {
-        eventsToShowOnCalendar
-            .addAll(await getEventsForTheMonth(DateTime(end.year, _month)));
-      }
-    }
-
-    if (eventsToShowOnCalendar.isNotEmpty) {
-      events.clear();
-      addEventsToCalendar(eventsToShowOnCalendar);
-    }
   }
 
   @override
@@ -76,27 +48,32 @@ class _EventsWidgetState extends State<EventsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-        child: Column(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 28.0),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             if (isAdmin)
               FloatingActionButton(
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.green[700],
                   heroTag: 'add',
                   tooltip: 'Add Event',
                   child: const Icon(Icons.add),
                   onPressed: () {
-                    MsaRouter.instance.push(EventModifyScreen.routeForAdd());
+                    showAddEventScreen();
                   }),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 6),
-            ),
             FloatingActionButton(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.orange[800],
+                heroTag: 'refresh',
+                tooltip: 'Refresh',
+                child: const Icon(Icons.refresh_outlined),
+                onPressed: () async {
+                  await refreshBasedOnCurrentCalendar();
+                }),
+            FloatingActionButton(
+                backgroundColor: Colors.blue[800],
                 heroTag: 'today',
                 tooltip: 'Today',
                 child: const Icon(Icons.today_outlined),
@@ -111,24 +88,24 @@ class _EventsWidgetState extends State<EventsWidget> {
           children: [
             TableCalendar(
               events: events,
-              startDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
-                  DateTime.now().day),
-              endDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
-                  DateTime.now().day),
+              startDay: DateTime.now().subtract(const Duration(days: 90)),
+              endDay: DateTime.now().add(const Duration(days: 90)),
               initialSelectedDay: DateTime.now(),
-              initialCalendarFormat: CalendarFormat.twoWeeks,
+              initialCalendarFormat: CalendarFormat.month,
+              availableCalendarFormats: const {
+                CalendarFormat.month: 'Monthly',
+              },
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarController: _calendarController, //required
               locale: 'en_US',
               onDaySelected: (date, events, e) {
                 setState(() {
-                  //print({'Available events: ', events});
-                  selectedEvents = events;
+                  //print({'Available events on day selected: ', events});
+                  selectedEvents = events.isNotEmpty ? events : [];
                 });
               },
               onCalendarCreated: (first, last, format) {
-                //print("onCalendarCreated called + API" + first.toString() + " - " + last.toString());
-                refreshCalendarEvents(first, last);
+                refreshBasedOnCurrentCalendar();
               },
               onVisibleDaysChanged: (first, last, format) {
                 //print("onVisibleDaysChanged called + API" + first.toString() + " - " + last.toString());
@@ -139,7 +116,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                   margin: const EdgeInsets.all(4.0),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Colors.green[700],
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                   child: Text(
@@ -151,8 +128,9 @@ class _EventsWidgetState extends State<EventsWidget> {
                   margin: const EdgeInsets.all(4.0),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25.0),
+                    shape: BoxShape.rectangle,
+                    color: Colors.blue[700],
+                    borderRadius: BorderRadius.circular(50.0),
                   ),
                   child: Text(
                     date.day.toString(),
@@ -166,6 +144,11 @@ class _EventsWidgetState extends State<EventsWidget> {
             ...selectedEvents.isEmpty
                 ? {
                     const Padding(padding: EdgeInsets.only(bottom: 20.0)),
+                    const Center(
+                      child: Icon(Icons.cancel_outlined),
+                      widthFactor: 2.0,
+                      heightFactor: 2.0,
+                    ),
                     const Text('No Events on the selected day'),
                   }
                 : selectedEvents.map(
@@ -189,29 +172,26 @@ class _EventsWidgetState extends State<EventsWidget> {
                                   ),
                                 ),
                                 const Spacer(),
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  tooltip: 'Edit MSA Event',
-                                  onPressed: () {
-                                    MsaRouter.instance.push(
-                                      EventModifyScreen.routeForEdit(
-                                        MsaEvent.params(
-                                            'title',
-                                            'description',
-                                            DateTime(2000, 12, 23),
-                                            'roomInfo',
-                                            'address',
-                                            'socialMediaLink',
-                                            'meetingLink'),
+                                if (isAdmin)
+                                  (Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit_outlined),
+                                        tooltip: 'Edit MSA Event',
+                                        onPressed: () {
+                                          showEditEventScreen(event);
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.close),
-                                  tooltip: 'Delete MSA Event',
-                                  onPressed: () {},
-                                ),
+                                      IconButton(
+                                        icon: const Icon(
+                                            Icons.delete_forever_outlined),
+                                        tooltip: 'Delete MSA Event',
+                                        onPressed: () {
+                                          showDeleteEventDialog(event);
+                                        },
+                                      ),
+                                    ],
+                                  )),
                               ],
                             ),
                             ListTile(
@@ -337,7 +317,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                     ),
                   ),
             const Padding(
-              padding: EdgeInsets.only(bottom: 160.0),
+              padding: EdgeInsets.only(bottom: 100.0),
             )
           ],
         ),
@@ -364,7 +344,92 @@ class _EventsWidgetState extends State<EventsWidget> {
     }
   }
 
+  refreshCalendarEvents(DateTime start, DateTime end) async {
+    List<MsaEvent> eventsToShowOnCalendar = <MsaEvent>[];
+    if (start.month == end.month) {
+      eventsToShowOnCalendar =
+          await getEventsForTheMonth(_calendarController.focusedDay);
+    } else if (start.month < end.month) {
+      for (int _month = start.month; _month <= end.month; ++_month) {
+        eventsToShowOnCalendar
+            .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
+      }
+    } else if (start.month > end.month) {
+      for (int _month = start.month; _month <= 12; ++_month) {
+        eventsToShowOnCalendar
+            .addAll(await getEventsForTheMonth(DateTime(start.year, _month)));
+      }
+      for (int _month = 1; _month <= end.month; ++_month) {
+        eventsToShowOnCalendar
+            .addAll(await getEventsForTheMonth(DateTime(end.year, _month)));
+      }
+    }
+
+    if (eventsToShowOnCalendar.isNotEmpty) {
+      events.clear();
+      addEventsToCalendar(eventsToShowOnCalendar);
+    }
+  }
+
   switchToToday() {
-    _calendarController.setSelectedDay(DateTime.now());
+    DateTime dateTime =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    _calendarController.setFocusedDay(dateTime);
+    _calendarController.setSelectedDay(dateTime);
+    refreshBasedOnCurrentCalendar();
+  }
+
+  showAddEventScreen() async {
+    MsaRouter.instance
+        .push(
+          EventModifyScreen.routeForAdd(),
+        )
+        .then((value) => refreshBasedOnCurrentCalendar());
+  }
+
+  showEditEventScreen(MsaEvent msaEvent) {
+    MsaRouter.instance
+        .push(
+          EventModifyScreen.routeForEdit(msaEvent),
+        )
+        .then((value) => refreshBasedOnCurrentCalendar());
+  }
+
+  showDeleteEventDialog(MsaEvent msaEvent) {
+    showConfirmationDialog(
+      context,
+      'Confirm delete?',
+      'Are you sure want to delete this event?',
+      'Delete',
+      Colors.red,
+      1,
+      () => removeMsaEvent(msaEvent),
+    ).then((value) => refreshBasedOnCurrentCalendar());
+  }
+
+  Future refreshBasedOnCurrentCalendar() async {
+    List focusedDates = _calendarController.visibleDays;
+    int focusedDatesLength = focusedDates.length;
+    DateTime start = focusedDates[0];
+    //print('start Date ' + start.toString());
+    DateTime end = focusedDates[focusedDatesLength - 1];
+    //print('end Date ' + end.toString());
+    await refreshCalendarEvents(start, end);
+    if (events.isNotEmpty) {
+      DateTime selectedDate = _calendarController.selectedDay;
+      List<MsaEvent> _selectedEvents = <MsaEvent>[];
+      var result = events.entries.where(
+        (element) =>
+            element.key ==
+            DateTime(selectedDate.year, selectedDate.month, selectedDate.day),
+      );
+      if (result.isNotEmpty) {
+        _selectedEvents = result.single.value;
+      }
+      setState(() {
+        //print({'Available events on refresh called: ', _selectedEvents});
+        selectedEvents = _selectedEvents.isNotEmpty ? _selectedEvents : [];
+      });
+    }
   }
 }

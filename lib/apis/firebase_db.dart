@@ -62,6 +62,7 @@ Future<bool> addUsers(String emailAddress, bool isAdmin) async {
 }
 
 Future<List<Room>> getReflectionRooms() async {
+  print('** querying for rooms');
   var refRoomRef = FirebaseFirestore.instance
       .collection(MSAConstants.getDbRootPath() + 'rooms/');
 
@@ -171,6 +172,7 @@ Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
         for (Map eventInADay in eventsInADay.values) {
           for (Map rawEvent in eventInADay.values) {
             MsaEvent event = MsaEvent.params(
+              rawEvent['id'],
               rawEvent['title'],
               rawEvent['description'],
               DateTime.parse(rawEvent['dateTime']),
@@ -187,6 +189,7 @@ Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
       eventsInADay = response.value[1];
       for (Map rawEvent in eventsInADay.values) {
         MsaEvent event = MsaEvent.params(
+          rawEvent['id'],
           rawEvent['title'],
           rawEvent['description'],
           DateTime.parse(rawEvent['dateTime']),
@@ -203,4 +206,41 @@ Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
   } on Error catch (_) {}
 
   return events;
+}
+
+modifyMsaEvent(MsaEvent msaEvent) async {
+  try {
+    DatabaseReference ref = FirebaseDatabase.instance.reference();
+    await ref
+        .reference()
+        .child(
+            "${MSAConstants.getDbRootPath()}/events/${msaEvent.dateTime.year}-${msaEvent.dateTime.month}/${msaEvent.dateTime.day}/")
+        .update(
+      {
+        msaEvent.id: {
+          'id': msaEvent.id,
+          'title': (msaEvent.title.length > 20)
+              ? msaEvent.title.substring(0, 20)
+              : msaEvent.title,
+          'description': msaEvent.description ?? '',
+          'dateTime': msaEvent.dateTime.toString(),
+          'roomInfo': msaEvent.roomInfo ?? '',
+          'address': msaEvent.address ?? '',
+          'socialMediaLink': msaEvent.socialMediaLink ?? '',
+          'meetingLink': msaEvent.meetingLink ?? '',
+        }
+      },
+    );
+  } on Error catch (_) {}
+}
+
+removeMsaEvent(MsaEvent msaEvent) async {
+  try {
+    DatabaseReference ref = FirebaseDatabase.instance.reference();
+    await ref
+        .reference()
+        .child(
+            "${MSAConstants.getDbRootPath()}/events/${msaEvent.dateTime.year}-${msaEvent.dateTime.month}/${msaEvent.dateTime.day}/${msaEvent.id}")
+        .remove();
+  } on Error catch (_) {}
 }
