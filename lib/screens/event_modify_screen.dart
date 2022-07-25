@@ -142,7 +142,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                   width: MediaQuery.of(context).size.width,
                   child: CupertinoDatePicker(
                     minimumDate:
-                        DateTime.now().subtract(const Duration(days: 3)),
+                        DateTime.now().subtract(const Duration(days: 90)),
                     maximumDate: DateTime.now().add(const Duration(days: 90)),
                     minimumYear: DateTime.now().year,
                     maximumYear: DateTime.now().year + 1,
