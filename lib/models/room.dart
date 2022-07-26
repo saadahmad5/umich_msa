@@ -7,9 +7,13 @@ class Room {
   late bool mCard;
   late String name;
   late String room;
+  late String address;
   late String whereAt;
 
-  Room() {
+  Room.noparams() {
     coordinates = Coordinates();
   }
+
+  Room.params(this.address, this.coordinates, this.description, this.imageUrl,
+      this.mCard, this.name, this.room, this.whereAt);
 }

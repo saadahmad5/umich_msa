@@ -71,14 +71,15 @@ Future<List<Room>> getReflectionRooms() async {
   List<Room> rooms = <Room>[];
   for (var element in queryDocument) {
     if (element.exists) {
-      Room room = Room();
+      Room room = Room.noparams();
 
       room.coordinates.assignGeoPointValues(element.get('coordinates'));
-      room.description = element.get('description');
-      room.imageUrl = element.get('imageUrl');
+      room.description = element.get('description') ?? 'undefined';
+      room.imageUrl = element.get('imageUrl') ?? 'undefined';
       room.mCard = element.get('mCard');
-      room.name = element.get('name');
-      room.room = element.get('room');
+      room.name = element.get('name') ?? 'undefined';
+      room.room = element.get('room') ?? 'undefined';
+      room.address = element.get('address') ?? 'undefined';
       room.whereAt = element.get('whereAt');
 
       rooms.add(room);

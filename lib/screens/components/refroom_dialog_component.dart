@@ -2,6 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:umich_msa/models/room.dart';
+import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/screens/components/confirmation_dialog_component.dart';
+import 'package:umich_msa/screens/room_modify_screen.dart';
 
 Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
   return showDialog<void>(
@@ -9,12 +12,33 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
     barrierDismissible: true,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(
-          room.name,
-          style: const TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.w700,
-          ),
+        title: Row(
+          children: [
+            Text(
+              room.name,
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const Spacer(),
+            IconButton(
+              padding: const EdgeInsets.all(0),
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Edit Room',
+              onPressed: () {
+                showEditRoomScreen(room);
+              },
+            ),
+            IconButton(
+              padding: const EdgeInsets.all(0),
+              icon: const Icon(Icons.delete_forever_outlined),
+              tooltip: 'Delete Room',
+              onPressed: () {
+                showDeleteRoomDialog(context, room);
+              },
+            ),
+          ],
         ),
         content: SingleChildScrollView(
           child: ListBody(
@@ -37,6 +61,7 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
               ),
               Text(room.description),
               Text(room.room),
+              Text(room.address),
               Text('In the ' + room.whereAt + ' campus'),
               room.mCard
                   ? const Text(
@@ -84,5 +109,23 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
         ],
       );
     },
+  );
+}
+
+showEditRoomScreen(Room room) {
+  MsaRouter.instance.push(
+    RoomModifyScreen.routeForEdit(room),
+  );
+}
+
+showDeleteRoomDialog(BuildContext context, Room room) {
+  showConfirmationDialog(
+    context,
+    'Confirm delete?',
+    'Are you sure want to delete this event?',
+    'Delete',
+    Colors.red,
+    1,
+    () => {Navigator.pop(context)},
   );
 }

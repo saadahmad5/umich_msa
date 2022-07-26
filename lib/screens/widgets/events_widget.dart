@@ -102,6 +102,8 @@ class _EventsWidgetState extends State<EventsWidget> {
                 setState(() {
                   //print({'Available events on day selected: ', events});
                   selectedEvents = events.isNotEmpty ? events : [];
+                  selectedEvents
+                      .sort((a, b) => a.dateTime.compareTo(b.dateTime));
                 });
               },
               onCalendarCreated: (first, last, format) {
@@ -429,6 +431,7 @@ class _EventsWidgetState extends State<EventsWidget> {
       setState(() {
         //print({'Available events on refresh called: ', _selectedEvents});
         selectedEvents = _selectedEvents.isNotEmpty ? _selectedEvents : [];
+        selectedEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
       });
     }
   }

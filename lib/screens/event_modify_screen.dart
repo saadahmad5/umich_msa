@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:umich_msa/apis/firebase_db.dart';
@@ -7,6 +5,7 @@ import 'package:umich_msa/constants.dart';
 import 'package:umich_msa/models/event.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/confirmation_dialog_component.dart';
+import 'package:uuid/uuid.dart';
 
 class EventModifyScreen extends StatefulWidget {
   const EventModifyScreen({Key? key}) : super(key: key);
@@ -76,6 +75,17 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
       _msaEventMeetingController = TextEditingController();
       _msaEventDateTime = DateTime.now();
     }
+  }
+
+  @override
+  void dispose() {
+    _msaEventTitleController.dispose();
+    _msaEventDescriptionController.dispose();
+    _msaEventSocialMediaLinkController.dispose();
+    _msaEventRoomController.dispose();
+    _msaEventAddressController.dispose();
+    _msaEventMeetingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -237,10 +247,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                             false || _formKey.currentState!.validate();
 
                         if (formValid) {
-                          String eventId =
-                              DateTime.now().microsecondsSinceEpoch.toString() +
-                                  Random.secure().nextInt(2048).toString();
-
+                          String eventId = Uuid().v4();
                           showConfirmationDialog(
                             context,
                             'Confirm changes?',

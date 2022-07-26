@@ -159,7 +159,15 @@ class _MapWidgetState extends State<MapWidget> {
   showAddRoomScreen() async {
     MsaRouter.instance
         .push(
-          RoomModifyScreen.route(),
+          RoomModifyScreen.routeForAdd(),
+        )
+        .then((value) => getMarkers());
+  }
+
+  showEditRoomScreen(Room room) async {
+    MsaRouter.instance
+        .push(
+          RoomModifyScreen.routeForEdit(room),
         )
         .then((value) => getMarkers());
   }

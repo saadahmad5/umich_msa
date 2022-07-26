@@ -1,12 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/constants.dart';
 
 class RoomModifyScreen extends StatefulWidget {
   const RoomModifyScreen({Key? key}) : super(key: key);
   static String routeName = 'roomModifyScreen';
-  static Route<RoomModifyScreen> route() {
+
+  static bool _isEdit = false;
+  static Room _room = Room.noparams();
+
+  static Route<RoomModifyScreen> routeForAdd() {
+    _isEdit = false;
+
+    return MaterialPageRoute<RoomModifyScreen>(
+      settings: RouteSettings(name: routeName),
+      builder: (BuildContext context) => const RoomModifyScreen(),
+    );
+  }
+
+  static Route<RoomModifyScreen> routeForEdit(Room room) {
+    _isEdit = true;
+    _room = room;
+
     return MaterialPageRoute<RoomModifyScreen>(
       settings: RouteSettings(name: routeName),
       builder: (BuildContext context) => const RoomModifyScreen(),
@@ -19,13 +36,61 @@ class RoomModifyScreen extends StatefulWidget {
 
 class _RoomModifyScreenState extends State<RoomModifyScreen> {
   int _currentStep = 0;
+  final _formKey = GlobalKey<FormState>();
+  late bool _isEdit;
+  late Room _room;
+  late TextEditingController _nameController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _roomController;
+  late TextEditingController _addressController;
+  late TextEditingController _longitudeController;
+  late TextEditingController _latitudeController;
+  late String selectedCampus;
+
+  @override
+  void initState() {
+    super.initState();
+    _isEdit = RoomModifyScreen._isEdit;
+    if (_isEdit) {
+      _room = RoomModifyScreen._room;
+      _nameController = TextEditingController(text: _room.name);
+      _descriptionController = TextEditingController(text: _room.description);
+      _roomController = TextEditingController(text: _room.room);
+      _addressController = TextEditingController(text: _room.address);
+      _longitudeController = TextEditingController(
+          text: _room.coordinates.longitude.toStringAsFixed(5));
+      _latitudeController = TextEditingController(
+          text: _room.coordinates.latitude.toStringAsFixed(5));
+      selectedCampus = _room.whereAt;
+    } else {
+      _nameController = TextEditingController();
+      _descriptionController = TextEditingController();
+      _roomController = TextEditingController();
+      _addressController = TextEditingController();
+      _longitudeController = TextEditingController();
+      _latitudeController = TextEditingController();
+      selectedCampus = 'North';
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _roomController.dispose();
+    _addressController.dispose();
+    _longitudeController.dispose();
+    _latitudeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: CupertinoColors.lightBackgroundGray,
-        middle: Text('Modify the Reflection Room'),
+        middle: Text(
+            _isEdit ? 'Modify the Reflection Room' : 'Add Reflection Room'),
       ),
       child: Scaffold(
         body: SingleChildScrollView(
@@ -44,13 +109,14 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                     Container(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: TextFormField(
+                        controller: _nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           contentPadding: MSAConstants.textBoxPadding,
                           filled: true,
                           fillColor: MSAConstants.grayTextBoxBackgroundColor,
                           border: InputBorder.none,
-                          labelText: 'Title',
+                          labelText: 'Name',
                           hintText: "Michigan Union",
                         ),
                       ),
@@ -58,6 +124,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                     Container(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: TextFormField(
+                        controller: _descriptionController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           contentPadding: MSAConstants.textBoxPadding,
@@ -69,9 +136,29 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                         ),
                       ),
                     ),
+                    Row(
+                      children: [
+                        const Text('MCard Required?'),
+                        const Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                        ),
+                        Checkbox(value: true, onChanged: (value) {}),
+                      ],
+                    ),
+                  ],
+                ),
+                isActive: _currentStep >= 0,
+                state:
+                    _currentStep >= 0 ? StepState.complete : StepState.disabled,
+              ),
+              Step(
+                title: const Text('Location'),
+                content: Column(
+                  children: <Widget>[
                     Container(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: TextFormField(
+                        controller: _roomController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           contentPadding: MSAConstants.textBoxPadding,
@@ -85,23 +172,74 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                     ),
                     Row(
                       children: [
-                        const Text('MCard Required?'),
-                        const Padding(
-                          padding: EdgeInsets.only(right: 8.0),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3.2,
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: _longitudeController,
+                            decoration: InputDecoration(
+                              contentPadding: MSAConstants.textBoxPadding,
+                              filled: true,
+                              fillColor:
+                                  MSAConstants.grayTextBoxBackgroundColor,
+                              border: InputBorder.none,
+                              labelText: 'Longitude',
+                              hintText: MSAConstants.defaultLongitude
+                                  .toStringAsFixed(5),
+                            ),
+                          ),
                         ),
-                        Checkbox(value: true, onChanged: (value) {}),
+                        const Spacer(),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3.2,
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: _latitudeController,
+                            decoration: InputDecoration(
+                              contentPadding: MSAConstants.textBoxPadding,
+                              filled: true,
+                              fillColor:
+                                  MSAConstants.grayTextBoxBackgroundColor,
+                              border: InputBorder.none,
+                              labelText: 'Latitude',
+                              hintText: MSAConstants.defaultLatitude
+                                  .toStringAsFixed(5),
+                            ),
+                          ),
+                        ),
                       ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                          contentPadding: MSAConstants.textBoxPadding,
+                          filled: true,
+                          fillColor: MSAConstants.grayTextBoxBackgroundColor,
+                          border: InputBorder.none,
+                          labelText: 'Building Address',
+                          hintText: "500 S. State St., Ann Arbor, MI",
+                        ),
+                      ),
                     ),
                     Row(
                       children: [
-                        const Text('At '),
+                        const Text('At the'),
                         const Padding(
                           padding: EdgeInsets.only(right: 8.0),
                         ),
                         DropdownButton(
-                          value: 'Central',
+                          value: selectedCampus,
                           onTap: () {},
-                          onChanged: (String? newValue) {},
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedCampus = newValue.toString();
+                            });
+                          },
                           items: MSAConstants.campusLocations
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
@@ -115,17 +253,8 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                         ),
                         const Text(' campus'),
                       ],
-                    )
+                    ),
                   ],
-                ),
-                isActive: _currentStep >= 0,
-                state:
-                    _currentStep >= 0 ? StepState.complete : StepState.disabled,
-              ),
-              Step(
-                title: const Text('Location'),
-                content: Column(
-                  children: <Widget>[],
                 ),
                 isActive: _currentStep >= 0,
                 state:
