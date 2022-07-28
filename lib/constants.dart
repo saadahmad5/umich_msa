@@ -15,6 +15,8 @@ class MSAConstants {
   static double defaultLatitude = 42.2733150;
   static double defaultLongitude = -83.7380000;
 
+  static Size imageDimensions = const Size(640, 480);
+
   static String mCommunityApi =
       "https://mcommunity.umich.edu/mcPeopleService/people/";
 

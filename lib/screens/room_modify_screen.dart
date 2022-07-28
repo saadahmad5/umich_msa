@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/constants.dart';
@@ -36,6 +41,8 @@ class RoomModifyScreen extends StatefulWidget {
 
 class _RoomModifyScreenState extends State<RoomModifyScreen> {
   int _currentStep = 0;
+  File? pickedFile;
+  dynamic _pickImageError;
   final _formKey = GlobalKey<FormState>();
   late bool _isEdit;
   late Room _room;
@@ -176,7 +183,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                           width: MediaQuery.of(context).size.width / 3.2,
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: TextFormField(
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.number,
                             controller: _longitudeController,
                             decoration: InputDecoration(
                               contentPadding: MSAConstants.textBoxPadding,
@@ -195,7 +202,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                           width: MediaQuery.of(context).size.width / 3.2,
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: TextFormField(
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.number,
                             controller: _latitudeController,
                             decoration: InputDecoration(
                               contentPadding: MSAConstants.textBoxPadding,
@@ -261,9 +268,44 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                     _currentStep >= 1 ? StepState.complete : StepState.disabled,
               ),
               Step(
-                title: new Text('Picture'),
+                title: const Text('Picture'),
                 content: Column(
-                  children: <Widget>[],
+                  children: <Widget>[
+                    Center(
+                      child: previewImage(),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          fixedSize: const Size(150, 20)),
+                      onPressed: () {
+                        uploadImage(ImageSource.gallery);
+                      },
+                      child: Row(
+                        children: const [
+                          Icon(Icons.upload_file_outlined),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          Text("Upload Image"),
+                        ],
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(bottom: 10)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.amber,
+                        ),
+                        Text(
+                          """ Max uploadable image size is: 
+                ${MSAConstants.imageDimensions.width.toInt()} x ${MSAConstants.imageDimensions.height.toInt()}""",
+                        )
+                      ],
+                    ),
+                  ],
                 ),
                 isActive: _currentStep >= 0,
                 state:
@@ -290,5 +332,54 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
         : _currentStep > 0
             ? setState(() => _currentStep -= 1)
             : null;
+  }
+
+  void setImageFileFromFile(File? file) {
+    pickedFile = file;
+  }
+
+  Widget previewImage() {
+    if (pickedFile != null) {
+      return SizedBox(
+        child: Image.file(
+          File(pickedFile!.path),
+        ),
+      );
+    } else if (_pickImageError != null) {
+      return Text(
+        'Pick image error: $_pickImageError',
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Column(
+        children: const [
+          Text(
+            'You have not picked an image yet.',
+            textAlign: TextAlign.left,
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 10)),
+        ],
+      );
+    }
+  }
+
+  Future<void> uploadImage(ImageSource source) async {
+    try {
+      pickedFile = await ImagePicker.pickImage(
+        source: source,
+        maxWidth: MSAConstants.imageDimensions.width,
+        maxHeight: MSAConstants.imageDimensions.height,
+        imageQuality: 50,
+      );
+      setState(() {
+        setImageFileFromFile(pickedFile);
+      });
+      print('** object uploaded: ' + pickedFile.toString());
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+      print('** object upload exception' + e.toString());
+    }
   }
 }
