@@ -22,6 +22,7 @@ class _MapWidgetState extends State<MapWidget> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late bool isAdmin = false;
   final Set<Marker> markers = {};
+  bool isLoaded = false;
   Coordinates myLocation = Coordinates();
   late GoogleMapController _googleMapController;
   final Location location = Location();
@@ -70,7 +71,7 @@ class _MapWidgetState extends State<MapWidget> {
     var availWidgetHeight = MediaQuery.of(context).size.height;
     var availWidgetWidth = MediaQuery.of(context).size.width;
 
-    return markers.isNotEmpty
+    return (markers.isNotEmpty || isLoaded)
         ? Scaffold(
             body: SizedBox(
               height: availWidgetHeight,
@@ -164,21 +165,15 @@ class _MapWidgetState extends State<MapWidget> {
         .then((value) => getMarkers());
   }
 
-  showEditRoomScreen(Room room) async {
-    MsaRouter.instance
-        .push(
-          RoomModifyScreen.routeForEdit(room),
-        )
-        .then((value) => getMarkers());
-  }
-
   getMarkers() {
     var listOfRooms = getReflectionRooms();
     listOfRooms
         .then(
       (value) => {
+        markers.clear(),
         setState(() {
           rooms = value;
+          isLoaded = true;
         }),
         rooms.forEach(
           (room) {
@@ -191,7 +186,7 @@ class _MapWidgetState extends State<MapWidget> {
                   title: room.name,
                   snippet: room.room,
                   onTap: () => {
-                    showRoomDetailsDialog(context, room),
+                    showRoomDetailsDialog(context, room, () => getMarkers()),
                   },
                 ),
                 icon: room.mCard

@@ -254,7 +254,6 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                             'Are you sure want to save these changes?',
                             'Save',
                             Colors.green,
-                            2,
                             () => {
                               modifyMsaEvent(
                                 MsaEvent.params(

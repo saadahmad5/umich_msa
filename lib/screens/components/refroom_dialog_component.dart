@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:umich_msa/apis/firebase_db.dart';
+import 'package:umich_msa/apis/firebase_storage.dart';
 import 'package:umich_msa/models/room.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/components/confirmation_dialog_component.dart';
 import 'package:umich_msa/screens/room_modify_screen.dart';
 
-Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
+Future<void> showRoomDetailsDialog(
+    BuildContext context, Room room, dynamic getMarkers) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -27,7 +30,7 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
               icon: const Icon(Icons.edit_outlined),
               tooltip: 'Edit Room',
               onPressed: () {
-                showEditRoomScreen(room);
+                showEditRoomScreen(room, getMarkers);
               },
             ),
             IconButton(
@@ -35,7 +38,7 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
               icon: const Icon(Icons.delete_forever_outlined),
               tooltip: 'Delete Room',
               onPressed: () {
-                showDeleteRoomDialog(context, room);
+                showDeleteRoomDialog(context, room, getMarkers);
               },
             ),
           ],
@@ -112,20 +115,29 @@ Future<void> showRoomDetailsDialog(BuildContext context, Room room) async {
   );
 }
 
-showEditRoomScreen(Room room) {
-  MsaRouter.instance.push(
-    RoomModifyScreen.routeForEdit(room),
-  );
+showEditRoomScreen(Room room, dynamic getMarkers) {
+  MsaRouter.instance
+      .push(
+        RoomModifyScreen.routeForEdit(room),
+      )
+      .then((value) => getMarkers());
 }
 
-showDeleteRoomDialog(BuildContext context, Room room) {
+showDeleteRoomDialog(BuildContext context, Room room, dynamic getMarkers) {
   showConfirmationDialog(
     context,
     'Confirm delete?',
-    'Are you sure want to delete this event?',
+    'Are you sure want to delete this reflection room?',
     'Delete',
     Colors.red,
-    1,
-    () => {Navigator.pop(context)},
+    () async => {
+      await removeRoom(room)
+          .then(
+            (value) => deleteReflectionRoomImage(room.roomId),
+          )
+          .then(
+            (value) => getMarkers(),
+          ),
+    },
   );
 }

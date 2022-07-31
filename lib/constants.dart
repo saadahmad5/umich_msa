@@ -11,6 +11,8 @@ class MSAConstants {
   static String developersEmail = "saadahm@umich.edu";
   @protected
   static String dbVersion = "v2";
+  @protected
+  static String storageVersion = "v2";
 
   static double defaultLatitude = 42.2733150;
   static double defaultLongitude = -83.7380000;
@@ -53,6 +55,12 @@ class MSAConstants {
   static String getDbRootPath() {
     String path = getGeneralDbRootPath();
     path += dbVersion + '/';
+    return path;
+  }
+
+  static String getStorageRootPath() {
+    String path = getGeneralDbRootPath();
+    path += storageVersion + '/';
     return path;
   }
 

@@ -404,7 +404,6 @@ class _EventsWidgetState extends State<EventsWidget> {
       'Are you sure want to delete this event?',
       'Delete',
       Colors.red,
-      1,
       () => removeMsaEvent(msaEvent),
     ).then((value) => refreshBasedOnCurrentCalendar());
   }

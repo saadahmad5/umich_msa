@@ -73,6 +73,7 @@ Future<List<Room>> getReflectionRooms() async {
     if (element.exists) {
       Room room = Room.noparams();
 
+      room.roomId = element.get('roomId');
       room.coordinates.assignGeoPointValues(element.get('coordinates'));
       room.description = element.get('description') ?? 'undefined';
       room.imageUrl = element.get('imageUrl') ?? 'undefined';
@@ -244,4 +245,53 @@ removeMsaEvent(MsaEvent msaEvent) async {
             "${MSAConstants.getDbRootPath()}/events/${msaEvent.dateTime.year}-${msaEvent.dateTime.month}/${msaEvent.dateTime.day}/${msaEvent.id}")
         .remove();
   } on Error catch (_) {}
+}
+
+Future<bool> modifyRoom(Room room) async {
+  bool response = false;
+
+  var roomRef = FirebaseFirestore.instance
+      .collection(MSAConstants.getDbRootPath() + 'rooms/');
+
+  try {
+    await roomRef
+        .doc(room.roomId)
+        .set(
+          {
+            'roomId': room.roomId,
+            'address': room.address,
+            'coordinates':
+                GeoPoint(room.coordinates.latitude, room.coordinates.longitude),
+            'description': room.description,
+            'imageUrl': room.imageUrl,
+            'mCard': room.mCard,
+            'name': room.name,
+            'room': room.room,
+            'whereAt': room.whereAt
+          },
+          //SetOptions(merge: true),
+        )
+        .then((value) => response = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+          response = false;
+          return false;
+        });
+  } on Error catch (e) {
+    print('** error while adding ref room' + e.toString());
+  }
+
+  return response;
+}
+
+Future<bool> removeRoom(Room room) async {
+  bool response = false;
+  try {
+    var roomRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'rooms/')
+        .doc(room.roomId);
+    await roomRef.delete().then((value) => response = true);
+  } on Error catch (_) {
+    print('! Error while deleting the reflection room');
+  }
+  return response;
 }

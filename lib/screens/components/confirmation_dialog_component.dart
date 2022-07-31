@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:umich_msa/msa_router.dart';
 
-Future<void> showConfirmationDialog(
-    BuildContext context,
-    String title,
-    String message,
-    String ok,
-    Color okColor,
-    int numOfPops,
-    dynamic function) async {
+Future<void> showConfirmationDialog(BuildContext context, String title,
+    String message, String ok, Color okColor, dynamic function) async {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -24,9 +19,7 @@ Future<void> showConfirmationDialog(
             ),
             onPressed: () {
               function();
-              for (int i = 0; i < numOfPops; ++i) {
-                Navigator.of(context).pop();
-              }
+              MsaRouter.instance.popUntil('homeScreen');
             },
           ),
           TextButton(

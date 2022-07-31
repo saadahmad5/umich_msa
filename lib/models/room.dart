@@ -1,6 +1,7 @@
 import 'package:umich_msa/models/coordinates.dart';
 
 class Room {
+  late String roomId;
   late Coordinates coordinates;
   late String description;
   late String imageUrl;
@@ -14,6 +15,6 @@ class Room {
     coordinates = Coordinates();
   }
 
-  Room.params(this.address, this.coordinates, this.description, this.imageUrl,
-      this.mCard, this.name, this.room, this.whereAt);
+  Room.params(this.roomId, this.address, this.coordinates, this.description,
+      this.imageUrl, this.mCard, this.name, this.room, this.whereAt);
 }

@@ -11,6 +11,8 @@ class Coordinates {
     longitude = MSAConstants.defaultLongitude;
   }
 
+  Coordinates.params(this.latitude, this.longitude);
+
   assignGeoPointValues(GeoPoint geoPoint) {
     latitude = geoPoint.latitude;
     longitude = geoPoint.longitude;
