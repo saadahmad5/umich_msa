@@ -9,7 +9,7 @@ import 'package:umich_msa/screens/components/confirmation_dialog_component.dart'
 import 'package:umich_msa/screens/room_modify_screen.dart';
 
 Future<void> showRoomDetailsDialog(
-    BuildContext context, Room room, dynamic getMarkers) async {
+    BuildContext context, Room room, dynamic getMarkers, bool isAdmin) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -25,22 +25,24 @@ Future<void> showRoomDetailsDialog(
               ),
             ),
             const Spacer(),
-            IconButton(
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(Icons.edit_outlined),
-              tooltip: 'Edit Room',
-              onPressed: () {
-                showEditRoomScreen(room, getMarkers);
-              },
-            ),
-            IconButton(
-              padding: const EdgeInsets.all(0),
-              icon: const Icon(Icons.delete_forever_outlined),
-              tooltip: 'Delete Room',
-              onPressed: () {
-                showDeleteRoomDialog(context, room, getMarkers);
-              },
-            ),
+            if (isAdmin)
+              IconButton(
+                padding: const EdgeInsets.all(0),
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: 'Edit Room',
+                onPressed: () {
+                  showEditRoomScreen(room, getMarkers);
+                },
+              ),
+            if (isAdmin)
+              IconButton(
+                padding: const EdgeInsets.all(0),
+                icon: const Icon(Icons.delete_forever_outlined),
+                tooltip: 'Delete Room',
+                onPressed: () {
+                  showDeleteRoomDialog(context, room, getMarkers);
+                },
+              ),
           ],
         ),
         content: SingleChildScrollView(

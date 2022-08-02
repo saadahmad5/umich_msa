@@ -1,31 +1,61 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum Login { successful, invalidUsername, wrongPassword, error }
-enum Logout { success, error }
+enum SignIn { successful, invalidUsername, wrongPassword, error }
+enum SignOut { success, error }
+enum SignUp { successful, alreadyExists, invalidEmail, error }
 
-Future<Login> signIn(String emailAddress, String password) async {
+Future<SignIn> signIn(String emailAddress, String password) async {
   try {
     final _ = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: emailAddress, password: password);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      return Login.invalidUsername;
+      return SignIn.invalidUsername;
     } else if (e.code == 'wrong-password') {
-      return Login.wrongPassword;
+      return SignIn.wrongPassword;
     } else {
-      return Login.error;
+      return SignIn.error;
     }
   }
-  return Login.successful;
+  return SignIn.successful;
 }
 
-Future<Logout> logOut() async {
+Future<SignOut> logOut() async {
   try {
     final _ = await FirebaseAuth.instance.signOut();
   } on FirebaseAuthException catch (e) {
     if (e.code.isNotEmpty) {
-      return Logout.error;
+      return SignOut.error;
     }
   }
-  return Logout.success;
+  return SignOut.success;
+}
+
+Future<bool> passwordResetThruEmail(String email) async {
+  print('** password reset');
+  try {
+    final _ = await FirebaseAuth.instance.sendPasswordResetEmail(
+      email: email,
+    );
+  } on Error catch (_) {
+    return false;
+  }
+  return true;
+}
+
+Future<SignUp> signUp(String emailAddress, String password) async {
+  print('** account sign up');
+  try {
+    final _ = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailAddress, password: password);
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'email-already-in-use') {
+      return SignUp.alreadyExists;
+    } else if (e.code == 'invalid-email') {
+      return SignUp.invalidEmail;
+    } else {
+      return SignUp.error;
+    }
+  }
+  return SignUp.successful;
 }

@@ -149,30 +149,30 @@ class _SignInScreenState extends State<SignInScreen> {
                           showPleaseWaitDialog(context);
                           bool response = await hasGoodConnectivity();
                           if (response) {
-                            Login login = await signIn(username, password);
+                            SignIn login = await signIn(username, password);
                             switch (login) {
-                              case Login.error:
+                              case SignIn.error:
                                 {
                                   Navigator.pop(context);
                                   showErrorDialog(context,
                                       'Please make sure you have a working internet connection or contact MSA Admin');
                                   break;
                                 }
-                              case Login.invalidUsername:
+                              case SignIn.invalidUsername:
                                 {
                                   Navigator.pop(context);
                                   showErrorDialog(context,
                                       'This email address is not signed up for MSA admin access');
                                   break;
                                 }
-                              case Login.wrongPassword:
+                              case SignIn.wrongPassword:
                                 {
                                   Navigator.pop(context);
                                   showErrorDialog(context,
                                       'The credentials are wrong for this email address');
                                   break;
                                 }
-                              case Login.successful:
+                              case SignIn.successful:
                                 {
                                   var uniqname = username.split("@");
                                   User? user =
@@ -229,15 +229,25 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: 40,
                     width: 80,
                     decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: Colors.orange,
                         borderRadius: BorderRadius.circular(5)),
                     child: TextButton(
                       onPressed: () {
-                        MsaRouter.instance
-                            .pushReplacement(SplashScreen.route());
+                        String emailAddress =
+                            _memberEmailAddressController.text.toString();
+                        if (emailAddress
+                            .contains(RegExp(r"^[a-z]+@umich.edu$"))) {
+                          passwordResetThruEmail(emailAddress);
+                          showErrorDialog(context,
+                              'Reset Password link sent successfully to your email. Please check the spam folder just in case if you do not get it.',
+                              title: 'Reset Password');
+                        } else {
+                          showErrorDialog(context,
+                              'Please make sure you entered your valid email address');
+                        }
                       },
                       child: const Text(
-                        'Cancel',
+                        'Reset',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -247,16 +257,15 @@ class _SignInScreenState extends State<SignInScreen> {
               const Padding(padding: EdgeInsets.only(bottom: 20)),
               Container(
                 height: 40,
-                width: 120,
+                width: 80,
                 decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(5)),
+                    color: Colors.red, borderRadius: BorderRadius.circular(5)),
                 child: TextButton(
                   onPressed: () {
-                    // ToDo.
+                    MsaRouter.instance.pushReplacement(SplashScreen.route());
                   },
                   child: const Text(
-                    'Reset Password',
+                    'Cancel',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),

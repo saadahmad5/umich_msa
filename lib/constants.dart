@@ -18,14 +18,15 @@ class MSAConstants {
   static double defaultLongitude = -83.7380000;
 
   static Size imageDimensions = const Size(640, 480);
+  static int maxImageSize = 122880;
 
-  static String mCommunityApi =
-      "https://mcommunity.umich.edu/mcPeopleService/people/";
+  static String mCommunityApi = "https://mcommunity-api.dsc.umich.edu/people/";
+  //"https://mcommunity.umich.edu/mcPeopleService/people/";
 
   static String welcomeMessage = """Welcome to the UMICH's MSA app!
   \nThis app will help you to:
   \n1. Find & navigate to the reflection rooms on the campus.
-  \n2. See MSA events on the calendar and get push notifications.
+  \n2. See MSA events on the calendar.
   \n3. Quick links to the MSA resources/ social media.
   \n4. Contact details of the MSA Board members""";
 

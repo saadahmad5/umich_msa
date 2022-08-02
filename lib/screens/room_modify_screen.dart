@@ -48,7 +48,7 @@ class RoomModifyScreen extends StatefulWidget {
 
 class _RoomModifyScreenState extends State<RoomModifyScreen> {
   int _currentStep = 0;
-  File? pickedFile;
+  File? _file;
   dynamic _pickImageError;
   final _formKey = GlobalKey<FormState>();
   late bool _isEdit;
@@ -372,8 +372,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
                             color: Colors.amber,
                           ),
                           Text(
-                            """ Max uploadable image size is: 
-                ${MSAConstants.imageDimensions.width.toInt()} x ${MSAConstants.imageDimensions.height.toInt()}""",
+                            """ Max uploadable image size is: \n  ${MSAConstants.imageDimensions.width.toInt()} x ${MSAConstants.imageDimensions.height.toInt()} (${MSAConstants.maxImageSize / 1024} kB)""",
                           )
                         ],
                       ),
@@ -411,15 +410,15 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
   }
 
   void setImageFileFromFile(File? file) {
-    pickedFile = file;
+    _file = file;
   }
 
   Widget previewImage() {
-    if (pickedFile != null) {
+    if (_file != null) {
       return SizedBox(
         height: 200,
         child: Image.file(
-          File(pickedFile!.path),
+          File(_file!.path),
         ),
       );
     } else if (_pickImageError != null) {
@@ -474,15 +473,24 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
 
   Future<void> uploadImage(ImageSource source) async {
     try {
-      pickedFile = await ImagePicker.pickImage(
+      File? pickedFile = await ImagePicker.pickImage(
         source: source,
         maxWidth: MSAConstants.imageDimensions.width,
         maxHeight: MSAConstants.imageDimensions.height,
         imageQuality: 50,
       );
-      setState(() {
-        setImageFileFromFile(pickedFile);
-      });
+      if (pickedFile != null) {
+        int fileSize = await pickedFile.length();
+        print('** picked fileSize ' + fileSize.toString());
+        if (fileSize <= MSAConstants.maxImageSize) {
+          setState(() {
+            setImageFileFromFile(pickedFile);
+          });
+        } else {
+          setImageFileFromFile(null);
+          _pickImageError = 'File too large';
+        }
+      }
       print('** object picked: ' + pickedFile.toString());
     } catch (e) {
       setState(() {
@@ -496,7 +504,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
     print('** Starting saving Reflection Room');
 
     bool formValid =
-        false || (_formKey.currentState!.validate() && pickedFile != null);
+        false || (_formKey.currentState!.validate() && _file != null);
 
     if (formValid) {
       showPleaseWaitDialog(context);
@@ -510,8 +518,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
         roomId = Uuid().v4();
       }
 
-      reflectionRoomImageUrl =
-          await uploadReflectionRoomImage(pickedFile!, roomId);
+      reflectionRoomImageUrl = await uploadReflectionRoomImage(_file!, roomId);
 
       if (reflectionRoomImageUrl != null) {
         response = await modifyRoom(

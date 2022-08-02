@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:umich_msa/msa_router.dart';
+import 'package:umich_msa/screens/components/admin_dialog_component.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -20,15 +20,86 @@ class AdminScreen extends StatelessWidget {
         middle: Text('Admin Screen'),
       ),
       child: CupertinoApp(
-        home: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              CupertinoActivityIndicator(),
-              SizedBox(width: 8),
-              Text('Page under construction')
-            ],
-          ),
+        useInheritedMediaQuery: true,
+        home: ListView(
+          children: <Widget>[
+            FlatButton(
+              onPressed: () {
+                showAdminDialog(
+                  context,
+                  'Add a new MSA Admin',
+                  'Please enter the UMICH email address of the new MSA admin',
+                  'Add',
+                  Colors.green,
+                );
+              },
+              child: const Card(
+                margin: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 0,
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.person_add_alt_1_outlined),
+                  title: Text('Add a new Admin'),
+                  subtitle: Text(
+                    'This option lets you to add a new MSA admin user who can manage the app',
+                  ),
+                  isThreeLine: true,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {},
+              child: const Card(
+                margin: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 0,
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.manage_accounts_outlined),
+                  title: Text('Manage Board Members Info'),
+                  subtitle: Text(
+                    'This option lets you to add, edit, sort, or delete the MSA board members info',
+                  ),
+                  isThreeLine: true,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {},
+              child: const Card(
+                margin: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 0,
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.add_link_outlined),
+                  title: Text('Manage Quick Links'),
+                  subtitle: Text(
+                    'This option lets you to add, edit, sort, or delete the MSA Quick Links',
+                  ),
+                  isThreeLine: true,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {},
+              child: const Card(
+                margin: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 0,
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.insert_link_outlined),
+                  title: Text('Modify Social Media Links'),
+                  subtitle: Text(
+                    'This option lets you to modify the MSA Social Media Links',
+                  ),
+                  isThreeLine: true,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

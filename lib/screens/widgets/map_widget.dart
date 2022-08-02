@@ -186,7 +186,8 @@ class _MapWidgetState extends State<MapWidget> {
                   title: room.name,
                   snippet: room.room,
                   onTap: () => {
-                    showRoomDetailsDialog(context, room, () => getMarkers()),
+                    showRoomDetailsDialog(
+                        context, room, () => getMarkers(), isAdmin),
                   },
                 ),
                 icon: room.mCard

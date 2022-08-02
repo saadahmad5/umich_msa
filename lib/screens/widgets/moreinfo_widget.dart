@@ -233,10 +233,10 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                     ),
                     IconButton(
                       onPressed: () async {
-                        await launch(socialMediaLinks['twitter']);
+                        await launch(socialMediaLinks['venmo']);
                       },
                       icon: Image.asset(
-                        'assets/images/twitter_icon.png',
+                        'assets/images/venmo_48.png',
                         scale: 2,
                       ),
                     ),
