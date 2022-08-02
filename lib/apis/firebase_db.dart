@@ -156,6 +156,37 @@ Future<Map<String, dynamic>> getSocialMediaLinks() async {
   return resp;
 }
 
+Future<bool> updateSocialMediaLinks(
+  String facebook,
+  String venmo,
+  String instagram,
+  String linktree,
+) async {
+  bool resp = false;
+
+  try {
+    var smlinks = FirebaseFirestore.instance.doc(MSAConstants.getDbRootPath());
+    await smlinks
+        .set({
+          'socialMediaLinks': {
+            'facebook': facebook,
+            'venmo': venmo,
+            'instagram': instagram,
+            'linktree': linktree
+          }
+        }, SetOptions(merge: true))
+        .then((value) => resp = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+          resp = false;
+          return resp;
+        });
+  } on Error catch (_) {
+    return false;
+  }
+
+  return resp;
+}
+
 Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
   List<MsaEvent> events = <MsaEvent>[];
   print('** called api');

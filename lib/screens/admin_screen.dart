@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:umich_msa/screens/components/admin_dialog_component.dart';
+import 'package:umich_msa/screens/components/social_media_dialog_component.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -83,7 +84,9 @@ class AdminScreen extends StatelessWidget {
               ),
             ),
             FlatButton(
-              onPressed: () {},
+              onPressed: () {
+                showSocialMediaDialog(context);
+              },
               child: const Card(
                 margin: EdgeInsets.symmetric(
                   vertical: 10.0,

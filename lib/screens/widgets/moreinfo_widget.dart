@@ -180,38 +180,53 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                   ),
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: [
-                        ...quicklinks.map(
-                          (element) => Card(
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Icon(returnIcon(element.icon)),
-                                ),
-                                Text(element.title),
-                                const Spacer(),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.green),
-                                  child: const Text(
-                                    'Link',
-                                    style: TextStyle(color: Colors.white),
+                  child: RefreshIndicator(
+                    onRefresh: () {
+                      return Future.delayed(const Duration(seconds: 1), () {
+                        loadQuickLinks();
+                        loadSocialMediaLinks();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Refreshed contents!"),
+                          ),
+                        );
+                      });
+                    },
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          ...quicklinks.map(
+                            (element) => Card(
+                              child: Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Icon(returnIcon(element.icon)),
                                   ),
-                                  onPressed: () async {
-                                    await launch(element.linkUrl);
-                                  },
-                                ),
-                                const SizedBox(width: 8),
-                              ],
+                                  Text(element.title),
+                                  const Spacer(),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.green),
+                                    child: const Text(
+                                      'Link',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    onPressed: () async {
+                                      await launch(element.linkUrl);
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -282,115 +297,131 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             ),
             // When we swipe towards right in More Info
 
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    child: Text(
-                      "MSA Board Members",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+            RefreshIndicator(
+              onRefresh: () {
+                return Future.delayed(const Duration(seconds: 1), () {
+                  loadBoardMembers();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Refreshed Board Members info!"),
+                    ),
+                  );
+                });
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      child: Text(
+                        "MSA Board Members",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  ...boardMembers.isEmpty
-                      ? {
-                          const Padding(padding: EdgeInsets.only(bottom: 20.0)),
-                          const Text('Please wait!'),
-                        }
-                      : {
-                          ...boardMembers.map(
-                            (member) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    ListTile(
-                                      isThreeLine: true,
-                                      title: Text(
-                                        member.name,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                    ...boardMembers.isEmpty
+                        ? {
+                            const Padding(
+                                padding: EdgeInsets.only(bottom: 20.0)),
+                            const Text('Please wait!'),
+                          }
+                        : {
+                            ...boardMembers.map(
+                              (member) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                        isThreeLine: true,
+                                        title: Text(
+                                          member.name,
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            member.position,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                fontStyle: FontStyle.italic),
-                                          ),
-                                          Row(
-                                            children: [
-                                              RichText(
-                                                text: const TextSpan(
-                                                  text: "Email: ",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontFamily: 'Cronos-Pro',
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Clipboard.setData(
-                                                          ClipboardData(
-                                                              text: member
-                                                                  .emailAddress))
-                                                      .then((value) => {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Text(
-                                                                    "Email address copied to clipboard"),
-                                                              ),
-                                                            ),
-                                                          });
-                                                },
-                                                child: Text(
-                                                  member.emailAddress,
-                                                  style: const TextStyle(
-                                                    color: Colors.blue,
-                                                    fontFamily: 'Cronos-Pro',
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          RichText(
-                                            text: TextSpan(
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              member.position,
+                                              maxLines: 1,
                                               style: const TextStyle(
-                                                  color: Colors.black54,
-                                                  fontFamily: 'Cronos-Pro'),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                  text: member.details,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                            Row(
+                                              children: [
+                                                RichText(
+                                                  text: const TextSpan(
+                                                    text: "Email: ",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontFamily: 'Cronos-Pro',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Clipboard.setData(
+                                                            ClipboardData(
+                                                                text: member
+                                                                    .emailAddress))
+                                                        .then((value) => {
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                const SnackBar(
+                                                                  content: Text(
+                                                                      "Email address copied to clipboard"),
+                                                                ),
+                                                              ),
+                                                            });
+                                                  },
+                                                  child: Text(
+                                                    member.emailAddress,
+                                                    style: const TextStyle(
+                                                      color: Colors.blue,
+                                                      fontFamily: 'Cronos-Pro',
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            RichText(
+                                              text: TextSpan(
+                                                style: const TextStyle(
+                                                    color: Colors.black54,
+                                                    fontFamily: 'Cronos-Pro'),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: member.details,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        }
-                ],
+                          }
+                  ],
+                ),
               ),
             ),
           ],
