@@ -28,7 +28,10 @@ Future<void> showRoomDetailsDialog(
             if (isAdmin)
               IconButton(
                 padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.edit_outlined),
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  color: Colors.orange,
+                ),
                 tooltip: 'Edit Room',
                 onPressed: () {
                   showEditRoomScreen(room, getMarkers);
@@ -37,7 +40,10 @@ Future<void> showRoomDetailsDialog(
             if (isAdmin)
               IconButton(
                 padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.delete_forever_outlined),
+                icon: const Icon(
+                  Icons.delete_forever_outlined,
+                  color: Colors.red,
+                ),
                 tooltip: 'Delete Room',
                 onPressed: () {
                   showDeleteRoomDialog(context, room, getMarkers);

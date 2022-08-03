@@ -65,13 +65,29 @@ class _EventsWidgetState extends State<EventsWidget> {
                     showAddEventScreen();
                   }),
             FloatingActionButton(
-                backgroundColor: Colors.orange[800],
-                heroTag: 'refresh',
-                tooltip: 'Refresh',
-                child: const Icon(Icons.refresh_outlined),
-                onPressed: () async {
-                  await refreshBasedOnCurrentCalendar();
-                }),
+              backgroundColor: Colors.orange[800],
+              heroTag: 'refresh',
+              tooltip: 'Refresh',
+              child: const Icon(Icons.refresh_outlined),
+              onPressed: () async {
+                await refreshBasedOnCurrentCalendar().then(
+                  (value) => {
+                    Future.delayed(
+                      const Duration(
+                        milliseconds: 500,
+                      ),
+                      () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Calendar refreshed!"),
+                          ),
+                        );
+                      },
+                    )
+                  },
+                );
+              },
+            ),
             FloatingActionButton(
                 backgroundColor: Colors.blue[800],
                 heroTag: 'today',
@@ -178,7 +194,10 @@ class _EventsWidgetState extends State<EventsWidget> {
                                   (Row(
                                     children: [
                                       IconButton(
-                                        icon: const Icon(Icons.edit_outlined),
+                                        icon: const Icon(
+                                          Icons.edit_outlined,
+                                          color: Colors.orange,
+                                        ),
                                         tooltip: 'Edit MSA Event',
                                         onPressed: () {
                                           showEditEventScreen(event);
@@ -186,7 +205,9 @@ class _EventsWidgetState extends State<EventsWidget> {
                                       ),
                                       IconButton(
                                         icon: const Icon(
-                                            Icons.delete_forever_outlined),
+                                          Icons.delete_forever_outlined,
+                                          color: Colors.red,
+                                        ),
                                         tooltip: 'Delete MSA Event',
                                         onPressed: () {
                                           showDeleteEventDialog(event);

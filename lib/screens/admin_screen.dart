@@ -50,40 +50,6 @@ class AdminScreen extends StatelessWidget {
               ),
             ),
             FlatButton(
-              onPressed: () {},
-              child: const Card(
-                margin: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: 0,
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.manage_accounts_outlined),
-                  title: Text('Manage Board Members Info'),
-                  subtitle: Text(
-                    'This option lets you to add, edit, sort, or delete the MSA board members info',
-                  ),
-                  isThreeLine: true,
-                ),
-              ),
-            ),
-            FlatButton(
-              onPressed: () {},
-              child: const Card(
-                margin: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: 0,
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.add_link_outlined),
-                  title: Text('Manage Quick Links'),
-                  subtitle: Text(
-                    'This option lets you to add, edit, sort, or delete the MSA Quick Links',
-                  ),
-                  isThreeLine: true,
-                ),
-              ),
-            ),
-            FlatButton(
               onPressed: () {
                 showSocialMediaDialog(context);
               },
