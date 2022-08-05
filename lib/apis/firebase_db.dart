@@ -24,6 +24,25 @@ Future<bool> hasGoodConnectivity() async {
   return response ?? false;
 }
 
+Future<bool> isLatestVersion() async {
+  bool response = false;
+  try {
+    var cms = FirebaseFirestore.instance
+        .doc(MSAConstants.getGeneralDbRootPath() + 'cms/');
+    await cms
+        .get()
+        .then((value) =>
+            response = (value.data()['version'] == MSAConstants.appVersion))
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+  } on Error catch (_) {
+    return false;
+  }
+  return response || false;
+}
+
 Future<bool> useMCommunityLogin() async {
   bool? response = false;
   try {
@@ -49,42 +68,54 @@ Future<bool> addUsers(String emailAddress, bool isAdmin) async {
 
   var newUser = <String, String>{};
   newUser[emailAddress] = DateTime.now().toString();
-  await users
-      .doc(isAdmin ? 'admins' : 'members')
-      .set(newUser, SetOptions(merge: true))
-      .then((value) => response = true)
-      .timeout(const Duration(seconds: 5), onTimeout: () {
+
+  try {
+    await users
+        .doc(isAdmin ? 'admins' : 'members')
+        .set(newUser, SetOptions(merge: true))
+        .then((value) => response = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+  } on Error catch (_) {
     response = false;
     return false;
-  });
+  }
 
   return response;
 }
 
 Future<List<Room>> getReflectionRooms() async {
   print('** querying for rooms');
-  var refRoomRef = FirebaseFirestore.instance
-      .collection(MSAConstants.getDbRootPath() + 'rooms/');
-
-  QuerySnapshot listOfReflectionRooms = await refRoomRef.get();
-  List<QueryDocumentSnapshot> queryDocument = listOfReflectionRooms.docs;
   List<Room> rooms = <Room>[];
-  for (var element in queryDocument) {
-    if (element.exists) {
-      Room room = Room.noparams();
 
-      room.roomId = element.get('roomId');
-      room.coordinates.assignGeoPointValues(element.get('coordinates'));
-      room.description = element.get('description') ?? 'undefined';
-      room.imageUrl = element.get('imageUrl') ?? 'undefined';
-      room.mCard = element.get('mCard');
-      room.name = element.get('name') ?? 'undefined';
-      room.room = element.get('room') ?? 'undefined';
-      room.address = element.get('address') ?? 'undefined';
-      room.whereAt = element.get('whereAt');
+  try {
+    var refRoomRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'rooms/');
 
-      rooms.add(room);
+    QuerySnapshot listOfReflectionRooms = await refRoomRef.get();
+    List<QueryDocumentSnapshot> queryDocument = listOfReflectionRooms.docs;
+
+    for (var element in queryDocument) {
+      if (element.exists) {
+        Room room = Room.noparams();
+
+        room.roomId = element.get('roomId');
+        room.coordinates.assignGeoPointValues(element.get('coordinates'));
+        room.description = element.get('description') ?? 'undefined';
+        room.imageUrl = element.get('imageUrl') ?? 'undefined';
+        room.mCard = element.get('mCard');
+        room.name = element.get('name') ?? 'undefined';
+        room.room = element.get('room') ?? 'undefined';
+        room.address = element.get('address') ?? 'undefined';
+        room.whereAt = element.get('whereAt');
+
+        rooms.add(room);
+      }
     }
+  } on Error catch (_) {
+    print('! Error while fetching rooms');
   }
   return rooms;
 }
@@ -101,6 +132,7 @@ Future<List<BoardMember>> getBoardMemberInfo() async {
     for (var element in queryDocument) {
       if (element.exists) {
         BoardMember boardMember = BoardMember.noparams();
+        boardMember.id = element.get('id');
         boardMember.order = element.get('order');
         boardMember.name = element.get('name');
         boardMember.position = element.get('position');
@@ -110,8 +142,61 @@ Future<List<BoardMember>> getBoardMemberInfo() async {
         boardMembers.add(boardMember);
       }
     }
-  } on Error catch (_) {}
+  } on Error catch (_) {
+    print('! Error while fetching boardmembers');
+  }
   return boardMembers;
+}
+
+Future<bool> modifyBoardMember(BoardMember boardMember) async {
+  bool resp = false;
+
+  var boardMemberRef = FirebaseFirestore.instance
+      .collection(MSAConstants.getDbRootPath() + 'boardmembers/');
+
+  try {
+    await boardMemberRef
+        .doc(boardMember.id)
+        .set(
+          {
+            'id': boardMember.id,
+            'name': boardMember.name,
+            'emailAddress': boardMember.emailAddress,
+            'position': boardMember.position,
+            'details': boardMember.details,
+            'order': boardMember.order,
+          },
+          //SetOptions(merge: true),
+        )
+        .then((value) => resp = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+          resp = false;
+          return false;
+        });
+  } on Error catch (e) {
+    print('** error while adding board member' + e.toString());
+  }
+
+  return resp;
+}
+
+Future<bool> removeBoardMember(BoardMember boardMember) async {
+  bool response = false;
+  try {
+    var boardMemberRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'boardmembers/')
+        .doc(boardMember.id);
+    await boardMemberRef
+        .delete()
+        .then((value) => response = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+  } on Error catch (_) {
+    print('! Error while deleting the board member');
+  }
+  return response;
 }
 
 Future<List<QuickLink>> getQuickLinks() async {
@@ -127,6 +212,7 @@ Future<List<QuickLink>> getQuickLinks() async {
       if (element.exists) {
         QuickLink quickLink = QuickLink.noparams();
 
+        quickLink.id = element.get('id');
         quickLink.icon = element.get('icon');
         quickLink.title = element.get('title');
         quickLink.linkUrl = element.get('linkUrl');
@@ -138,6 +224,58 @@ Future<List<QuickLink>> getQuickLinks() async {
     }
   } on Error catch (_) {}
   return quickLinks;
+}
+
+Future<bool> modifyQuickLinks(QuickLink quickLink) async {
+  bool resp = false;
+
+  var quickLinksRef = FirebaseFirestore.instance
+      .collection(MSAConstants.getDbRootPath() + 'quicklinks/');
+
+  try {
+    await quickLinksRef
+        .doc(quickLink.id)
+        .set(
+          {
+            'id': quickLink.id,
+            'title': quickLink.title,
+            'description': quickLink.description,
+            'linkUrl': quickLink.linkUrl,
+            'icon': quickLink.icon,
+            'order': MSAConstants.getOrder(),
+          },
+          //SetOptions(merge: true),
+        )
+        .then((value) => resp = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+          resp = false;
+          return false;
+        });
+  } on Error catch (e) {
+    print('** error while adding quick link' + e.toString());
+  }
+
+  return resp;
+}
+
+Future<bool> removeQuickLink(QuickLink quickLink) async {
+  bool response = false;
+  try {
+    var quickLinkRef = FirebaseFirestore.instance
+        .collection(MSAConstants.getDbRootPath() + 'quicklinks/')
+        .doc(quickLink.id);
+    await quickLinkRef
+        .delete()
+        .then((value) => response = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
+    ;
+  } on Error catch (_) {
+    print('! Error while deleting the quick link');
+  }
+  return response;
 }
 
 Future<Map<String, dynamic>> getSocialMediaLinks() async {
@@ -152,7 +290,14 @@ Future<Map<String, dynamic>> getSocialMediaLinks() async {
       return resp;
     });
   } on Error catch (_) {
-    return {};
+    return {
+      'socialMediaLinks': {
+        'facebook': 'https://facebook.com',
+        'venmo': 'https://venmo.com/',
+        'instagram': 'https://instagram.com/',
+        'linktree': 'https://linktree.com'
+      },
+    };
   }
   return resp;
 }
@@ -321,7 +466,13 @@ Future<bool> removeRoom(Room room) async {
     var roomRef = FirebaseFirestore.instance
         .collection(MSAConstants.getDbRootPath() + 'rooms/')
         .doc(room.roomId);
-    await roomRef.delete().then((value) => response = true);
+    await roomRef
+        .delete()
+        .then((value) => response = true)
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      response = false;
+      return false;
+    });
   } on Error catch (_) {
     print('! Error while deleting the reflection room');
   }

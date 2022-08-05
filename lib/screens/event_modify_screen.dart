@@ -97,6 +97,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
       ),
       child: Scaffold(
         body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.always,
@@ -148,7 +149,7 @@ class _EventModifyScreenState extends State<EventModifyScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height - 600,
+                  height: MediaQuery.of(context).size.height / 3,
                   width: MediaQuery.of(context).size.width,
                   child: CupertinoDatePicker(
                     minimumDate:

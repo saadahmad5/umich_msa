@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'models/coordinates.dart';
 
 class MSAConstants {
-  static bool isDebug = true;
+  static bool isDebug = false;
   static String appName = "University of Michigan Muslims Students Association";
   static String appVersion = "1.0";
   static String aboutMessage =
@@ -41,6 +41,26 @@ class MSAConstants {
     'South',
     'Medical'
   ];
+
+  static List<String> positions = [
+    'President', // 0
+    'Vice President Internal', // 1
+    'Vice President External', // 2
+    'Operations', // 3
+    'Brotherhood Chair', // 4
+    'Sisterhood Chair', // 5
+    'Treasurer', // 6
+    'Chair', // 7
+    'Other', // 8
+  ];
+
+  static List<String> iconTypes = ['form', 'spreadsheet', 'link', 'chat'];
+
+  static int getOrder() {
+    DateTime utcNow = DateTime.now().toUtc();
+    int orderNumber = utcNow.microsecondsSinceEpoch;
+    return orderNumber;
+  }
 
   static Color yellowColor = const Color.fromARGB(255, 252, 210, 12);
   static Color blueColor = const Color.fromARGB(255, 30, 48, 96);

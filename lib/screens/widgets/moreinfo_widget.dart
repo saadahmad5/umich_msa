@@ -9,6 +9,9 @@ import 'package:umich_msa/models/boardmember.dart';
 import 'package:umich_msa/models/quicklink.dart';
 import 'package:umich_msa/msa_router.dart';
 import 'package:umich_msa/screens/admin_screen.dart';
+import 'package:umich_msa/screens/boardmember_modify_screen.dart';
+import 'package:umich_msa/screens/components/confirmation_dialog_component.dart';
+import 'package:umich_msa/screens/quicklink_modify_screen.dart';
 import 'package:umich_msa/screens/splash_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -61,7 +64,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             quicklinks = value;
           }),
           quicklinks
-              .sort((first, second) => first.order.compareTo(second.order))
+              .sort((first, second) => second.order.compareTo(first.order))
         });
   }
 
@@ -102,7 +105,9 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                 heroTag: 'add',
                 tooltip: 'Add Quick Link',
                 child: const Icon(Icons.add),
-                onPressed: () {},
+                onPressed: () {
+                  showAddQuickLinkScreen();
+                },
               ),
               body: Column(
                 children: [
@@ -210,75 +215,103 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                         scrollDirection: Axis.vertical,
                         child: Column(
                           children: [
-                            ...quicklinks.map(
-                              (element) => Card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Icon(returnIcon(element.icon)),
-                                        ),
-                                        Text(element.title),
-                                        const Spacer(),
-                                        if (isAdmin)
-                                          IconButton(
-                                            padding: const EdgeInsets.all(0),
-                                            icon: const Icon(
-                                              Icons.edit_outlined,
-                                              color: Colors.orange,
+                            ...quicklinks.isEmpty
+                                ? {
+                                    const Padding(
+                                        padding: EdgeInsets.only(bottom: 20.0)),
+                                    const Text('Nothing here!'),
+                                  }
+                                : {
+                                    ...quicklinks.map(
+                                      (element) => Card(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: Icon(
+                                                      returnIcon(element.icon)),
+                                                ),
+                                                Text(element.title),
+                                                const Spacer(),
+                                                if (isAdmin)
+                                                  IconButton(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    icon: const Icon(
+                                                      Icons.edit_outlined,
+                                                      color: Colors.orange,
+                                                    ),
+                                                    tooltip: 'Edit Quick Link',
+                                                    onPressed: () {
+                                                      showEditQuickLinkScreen(
+                                                        element,
+                                                      );
+                                                    },
+                                                  ),
+                                                if (isAdmin)
+                                                  IconButton(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .delete_forever_outlined,
+                                                      color: Colors.red,
+                                                    ),
+                                                    tooltip:
+                                                        'Delete Quick Link',
+                                                    onPressed: () {
+                                                      showDeleteQuickLinkDialog(
+                                                        element,
+                                                      );
+                                                    },
+                                                  ),
+                                                IconButton(
+                                                  padding:
+                                                      const EdgeInsets.all(0),
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .arrow_forward_outlined,
+                                                    color: Colors.blue,
+                                                  ),
+                                                  tooltip: 'Link',
+                                                  onPressed: () async {
+                                                    await launch(
+                                                      element.linkUrl,
+                                                    );
+                                                  },
+                                                ),
+                                              ],
                                             ),
-                                            tooltip: 'Edit Quick Link',
-                                            onPressed: () {},
-                                          ),
-                                        if (isAdmin)
-                                          IconButton(
-                                            padding: const EdgeInsets.all(0),
-                                            icon: const Icon(
-                                              Icons.delete_forever_outlined,
-                                              color: Colors.red,
-                                            ),
-                                            tooltip: 'Delete Quick Link',
-                                            onPressed: () {},
-                                          ),
-                                        IconButton(
-                                          padding: const EdgeInsets.all(0),
-                                          icon: const Icon(
-                                            Icons.arrow_forward_outlined,
-                                            color: Colors.blue,
-                                          ),
-                                          tooltip: 'Link',
-                                          onPressed: () async {
-                                            await launch(element.linkUrl);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    if (element.description != null)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: RichText(
-                                          maxLines: 3,
-                                          textAlign: TextAlign.left,
-                                          text: TextSpan(
-                                            text:
-                                                element.description.toString(),
-                                            style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.black,
-                                              fontFamily: 'Cronos-Pro',
-                                            ),
-                                          ),
+                                            if (element.description != null)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                child: RichText(
+                                                  maxLines: 3,
+                                                  textAlign: TextAlign.left,
+                                                  text: TextSpan(
+                                                    text: element.description
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      fontSize: 14.0,
+                                                      color: Colors.black,
+                                                      fontFamily: 'Cronos-Pro',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                    ),
+                                  }
                           ],
                         ),
                       ),
@@ -360,7 +393,9 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                 heroTag: 'add',
                 tooltip: 'Add Board Member',
                 child: const Icon(Icons.add),
-                onPressed: () {},
+                onPressed: () {
+                  showAddBoardMemberScreen();
+                },
               ),
               body: RefreshIndicator(
                 onRefresh: () {
@@ -381,11 +416,13 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 12.0),
-                        child: Text(
-                          "MSA Board Members",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
+                        child: Center(
+                          child: Text(
+                            "MSA Board Members",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -393,7 +430,7 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                           ? {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 20.0)),
-                              const Text('Please wait!'),
+                              const Text('Nothing here!'),
                             }
                           : {
                               ...boardMembers.map(
@@ -424,7 +461,11 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                                                     color: Colors.orange,
                                                   ),
                                                   tooltip: 'Edit Member',
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    showEditBoardMemberScreen(
+                                                      member,
+                                                    );
+                                                  },
                                                 ),
                                               if (isAdmin)
                                                 IconButton(
@@ -436,7 +477,11 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
                                                     color: Colors.red,
                                                   ),
                                                   tooltip: 'Delete Member',
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    showDeleteBoardMemberDialog(
+                                                      member,
+                                                    );
+                                                  },
                                                 ),
                                             ],
                                           ),
@@ -586,5 +631,59 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
         ],
       ),
     );
+  }
+
+  showAddQuickLinkScreen() async {
+    MsaRouter.instance
+        .push(
+          QuickLinkModifyScreen.routeForAdd(),
+        )
+        .then((value) => loadQuickLinks());
+  }
+
+  showEditQuickLinkScreen(QuickLink quickLink) {
+    MsaRouter.instance
+        .push(
+          QuickLinkModifyScreen.routeForEdit(quickLink),
+        )
+        .then((value) => loadQuickLinks());
+  }
+
+  showDeleteQuickLinkDialog(QuickLink quickLink) {
+    showConfirmationDialog(
+      context,
+      'Confirm delete?',
+      'Are you sure want to delete this Quick Link?',
+      'Delete',
+      Colors.red,
+      () => removeQuickLink(quickLink),
+    ).then((value) => loadQuickLinks());
+  }
+
+  showAddBoardMemberScreen() async {
+    MsaRouter.instance
+        .push(
+          BoardMemberModifyScreen.routeForAdd(),
+        )
+        .then((value) => loadBoardMembers());
+  }
+
+  showEditBoardMemberScreen(BoardMember boardMember) {
+    MsaRouter.instance
+        .push(
+          BoardMemberModifyScreen.routeForEdit(boardMember),
+        )
+        .then((value) => loadBoardMembers());
+  }
+
+  showDeleteBoardMemberDialog(BoardMember boardMember) {
+    showConfirmationDialog(
+      context,
+      'Confirm delete?',
+      'Are you sure want to delete this Board Member info?',
+      'Delete',
+      Colors.red,
+      () => removeBoardMember(boardMember),
+    ).then((value) => loadBoardMembers());
   }
 }

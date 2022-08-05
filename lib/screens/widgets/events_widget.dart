@@ -95,6 +95,18 @@ class _EventsWidgetState extends State<EventsWidget> {
                 child: const Icon(Icons.today_outlined),
                 onPressed: () {
                   switchToToday();
+                  Future.delayed(
+                    const Duration(
+                      milliseconds: 100,
+                    ),
+                    () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Jumped to today!"),
+                        ),
+                      );
+                    },
+                  );
                 }),
           ],
         ),
@@ -107,9 +119,11 @@ class _EventsWidgetState extends State<EventsWidget> {
               startDay: DateTime.now().subtract(const Duration(days: 90)),
               endDay: DateTime.now().add(const Duration(days: 90)),
               initialSelectedDay: DateTime.now(),
-              initialCalendarFormat: CalendarFormat.month,
+              initialCalendarFormat: CalendarFormat.twoWeeks,
               availableCalendarFormats: const {
-                CalendarFormat.month: 'Monthly',
+                CalendarFormat.month: 'Weekly',
+                CalendarFormat.twoWeeks: 'Monthly',
+                CalendarFormat.week: 'Biweekly',
               },
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarController: _calendarController, //required
@@ -397,8 +411,9 @@ class _EventsWidgetState extends State<EventsWidget> {
   switchToToday() {
     DateTime dateTime =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    _calendarController.setFocusedDay(dateTime);
-    _calendarController.setSelectedDay(dateTime);
+    //_calendarController.setFocusedDay(dateTime);
+    _calendarController.setSelectedDay(dateTime,
+        animate: true, runCallback: true);
     refreshBasedOnCurrentCalendar();
   }
 
