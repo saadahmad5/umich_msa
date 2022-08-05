@@ -27,7 +27,7 @@ Future<User?> getUserDetails(String uniqname) async {
 
       //String displayName = res['person']['displayName'].toString();
       String displayName = res['displayName'].toString();
-      print('** response ' + displayName);
+      //print('** response ' + displayName);
       if (displayName != 'null') {
         return User(displayName);
       } else {

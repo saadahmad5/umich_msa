@@ -32,7 +32,7 @@ Future<SignOut> logOut() async {
 }
 
 Future<bool> passwordResetThruEmail(String email) async {
-  print('** password reset');
+  //print('** password reset');
   try {
     final _ = await FirebaseAuth.instance.sendPasswordResetEmail(
       email: email,
@@ -44,7 +44,7 @@ Future<bool> passwordResetThruEmail(String email) async {
 }
 
 Future<SignUp> signUp(String emailAddress, String password) async {
-  print('** account sign up');
+  //print('** account sign up');
   try {
     final _ = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailAddress, password: password);

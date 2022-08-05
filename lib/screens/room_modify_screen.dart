@@ -481,7 +481,7 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
       );
       if (pickedFile != null) {
         int fileSize = await pickedFile.length();
-        print('** picked fileSize ' + fileSize.toString());
+        //print('** picked fileSize ' + fileSize.toString());
         if (fileSize <= MSAConstants.maxImageSize) {
           setState(() {
             setImageFileFromFile(pickedFile);
@@ -491,17 +491,17 @@ class _RoomModifyScreenState extends State<RoomModifyScreen> {
           _pickImageError = 'File too large';
         }
       }
-      print('** object picked: ' + pickedFile.toString());
+      //print('** object picked: ' + pickedFile.toString());
     } catch (e) {
       setState(() {
         _pickImageError = e;
       });
-      print('** object picked exception: ' + e.toString());
+      //print('** object picked exception: ' + e.toString());
     }
   }
 
   saveReflectionRoom() async {
-    print('** Starting saving Reflection Room');
+    //print('** Starting saving Reflection Room');
 
     bool formValid =
         false || (_formKey.currentState!.validate() && _file != null);

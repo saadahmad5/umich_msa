@@ -91,7 +91,7 @@ Future<void> showAdminDialog(BuildContext context, String title, String message,
                 signUp(inputEmailAddress, inputPassword);
                 MsaRouter.instance.pop();
               } else {
-                print('** invalid credentials during sign up');
+                //print('** invalid credentials during sign up');
                 showErrorDialog(context,
                     """Please make sure:\n1. The Email Address you entered is a valid UMICH email address.\n2. Please make sure the passwords you entered are atleast 8 characters and they match.""");
               }

@@ -87,7 +87,7 @@ Future<bool> addUsers(String emailAddress, bool isAdmin) async {
 }
 
 Future<List<Room>> getReflectionRooms() async {
-  print('** querying for rooms');
+  //print('** querying for rooms');
   List<Room> rooms = <Room>[];
 
   try {
@@ -115,7 +115,7 @@ Future<List<Room>> getReflectionRooms() async {
       }
     }
   } on Error catch (_) {
-    print('! Error while fetching rooms');
+    //print('! Error while fetching rooms');
   }
   return rooms;
 }
@@ -143,7 +143,7 @@ Future<List<BoardMember>> getBoardMemberInfo() async {
       }
     }
   } on Error catch (_) {
-    print('! Error while fetching boardmembers');
+    //print('! Error while fetching boardmembers');
   }
   return boardMembers;
 }
@@ -174,7 +174,7 @@ Future<bool> modifyBoardMember(BoardMember boardMember) async {
           return false;
         });
   } on Error catch (e) {
-    print('** error while adding board member' + e.toString());
+    //print('** error while adding board member' + e.toString());
   }
 
   return resp;
@@ -194,7 +194,7 @@ Future<bool> removeBoardMember(BoardMember boardMember) async {
       return false;
     });
   } on Error catch (_) {
-    print('! Error while deleting the board member');
+    //print('! Error while deleting the board member');
   }
   return response;
 }
@@ -252,7 +252,7 @@ Future<bool> modifyQuickLinks(QuickLink quickLink) async {
           return false;
         });
   } on Error catch (e) {
-    print('** error while adding quick link' + e.toString());
+    //print('** error while adding quick link' + e.toString());
   }
 
   return resp;
@@ -273,7 +273,7 @@ Future<bool> removeQuickLink(QuickLink quickLink) async {
     });
     ;
   } on Error catch (_) {
-    print('! Error while deleting the quick link');
+    //print('! Error while deleting the quick link');
   }
   return response;
 }
@@ -335,7 +335,7 @@ Future<bool> updateSocialMediaLinks(
 
 Future<List<MsaEvent>> getEventsForTheMonth(DateTime focusedDay) async {
   List<MsaEvent> events = <MsaEvent>[];
-  print('** called api');
+  //print('** called api');
   try {
     DatabaseReference ref = FirebaseDatabase.instance.reference();
     DataSnapshot response = await ref
@@ -454,7 +454,7 @@ Future<bool> modifyRoom(Room room) async {
           return false;
         });
   } on Error catch (e) {
-    print('** error while adding ref room' + e.toString());
+    //print('** error while adding ref room' + e.toString());
   }
 
   return response;
@@ -474,7 +474,7 @@ Future<bool> removeRoom(Room room) async {
       return false;
     });
   } on Error catch (_) {
-    print('! Error while deleting the reflection room');
+    //print('! Error while deleting the reflection room');
   }
   return response;
 }

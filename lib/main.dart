@@ -21,8 +21,8 @@ Future<void> main() async {
       home: MsaRouter.instance.homeAsSplashScreen,
     ));
   }, (error, stackTrace) async {
-    print('error: $error');
-    print('stackTrace: $stackTrace');
+    // print('error: $error');
+    // print('stackTrace: $stackTrace');
   });
 
   // You only need to call this method if you need the binding to be initialized before calling runApp.
@@ -32,7 +32,7 @@ Future<void> main() async {
     final dynamic exception = details.exception;
     final StackTrace? stackTrace = details.stack;
     if (MSAConstants.isDebug) {
-      print('Caught Framework Error!');
+      // print('Caught Framework Error!');
       // In development mode simply print to console.
       FlutterError.dumpErrorToConsole(details);
     } else {

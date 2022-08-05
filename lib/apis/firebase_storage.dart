@@ -19,11 +19,11 @@ Future<String?> uploadReflectionRoomImage(File file, String filename) async {
     );
     response = await reflectionRoomImagesRef.getDownloadURL();
   } on FirebaseException catch (e) {
-    print('** firebase exception occurred while file upload ' + e.toString());
+    //print('** firebase exception occurred while file upload ' + e.toString());
   } on Error catch (_) {
-    print('** An exception was thrown at the target of its invocation.');
+    //print('** An exception was thrown at the target of its invocation.');
   }
-  print('** upload file name: ' + response!);
+  //print('** upload file name: ' + response!);
   return response;
 }
 
@@ -34,10 +34,10 @@ Future deleteReflectionRoomImage(String filename) async {
 
   try {
     await reflectionRoomImagesRef.delete();
-    print('** successful delete of blob');
+    //print('** successful delete of blob');
   } on FirebaseException catch (e) {
-    print('** firebase exception occurred while file delete ' + e.toString());
+    //print('** firebase exception occurred while file delete ' + e.toString());
   } on Error catch (_) {
-    print('** An exception was thrown at the target of its invocation.');
+    //print('** An exception was thrown at the target of its invocation.');
   }
 }
