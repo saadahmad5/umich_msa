@@ -100,14 +100,20 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             Scaffold(
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.endFloat,
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.green[700],
-                heroTag: 'add',
-                tooltip: 'Add Quick Link',
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  showAddQuickLinkScreen();
-                },
+              floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (isAdmin)
+                    FloatingActionButton(
+                      backgroundColor: Colors.green[700],
+                      heroTag: 'add',
+                      tooltip: 'Add Quick Link',
+                      child: const Icon(Icons.add),
+                      onPressed: () {
+                        showAddQuickLinkScreen();
+                      },
+                    ),
+                ],
               ),
               body: Column(
                 children: [
@@ -388,14 +394,20 @@ class _MoreInfoWidgetState extends State<MoreInfoWidget> {
             Scaffold(
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.endFloat,
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.green[700],
-                heroTag: 'add',
-                tooltip: 'Add Board Member',
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  showAddBoardMemberScreen();
-                },
+              floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (isAdmin)
+                    FloatingActionButton(
+                      backgroundColor: Colors.green[700],
+                      heroTag: 'add',
+                      tooltip: 'Add Board Member',
+                      child: const Icon(Icons.add),
+                      onPressed: () {
+                        showAddBoardMemberScreen();
+                      },
+                    ),
+                ],
               ),
               body: RefreshIndicator(
                 onRefresh: () {

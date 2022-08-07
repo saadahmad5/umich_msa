@@ -1,3 +1,4 @@
 flutter build apk --release --no-sound-null-safety
+flutter build appbundle --no-sound-null-safety
 
 flutter build ipa --export-options-plist=ios/exportOptions.plist --release --no-sound-null-safety
